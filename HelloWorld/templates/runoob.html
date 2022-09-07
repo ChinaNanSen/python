@@ -1,0 +1,20 @@
+{% comment %} <h1>{{hello}}</h1>
+<h1>{{context.0}}</h1>
+<span>{{context}}</span>
+<p>{{views_name}}</p>
+<h1>{{views_name.name}}</h1>
+<h1>{{name|filesizeformat}}</h1>
+<h1>{{ak.0}}</h1>
+{%if num > 90 and num <= 100 %}
+优秀
+{% elif num > 60 and num <= 90 %}
+合格
+{% else %}
+一边玩去～
+{% endif %} {% endcomment %}
+{% comment %} {% for i in context reversed %}
+{{ i }}
+{% endfor %} {% endcomment %}
+{% for i,j in views_name.items %}
+{{i}}--------{{j}}
+{% endfor %}
