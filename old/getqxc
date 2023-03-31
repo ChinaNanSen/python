@@ -1,0 +1,19 @@
+#!/bin/bash
+
+num=`curl -s "https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=04&provinceId=0&pageSize=30&isVerify=1&pageNo=1" |jq .value.total`
+
+nums=`echo $num -1 |bc`
+
+#for n in 0 
+for n in `seq 0  $nums`
+#for n in `seq 0 1`
+do
+	#dnum=`curl -s "https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=85&provinceId=0&pageSize=2400&isVerify=1&pageNo=1" |jq .value.list[$n].lotteryDrawResult` 
+	dnum=`curl -s "https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry?gameNo=85&provinceId=0&pageSize=5000&isVerify=1&pageNo=1" |jq .value.list[$n].lotteryDrawResult` 
+	if [ "$dnum" == "null" ];then
+		exit 101
+	else
+		#sed -i "1i $dnum" /tmp/hqxcnum.txt
+		echo $dnum >>/tmp/hqxcnum.txt
+	fi 
+done
