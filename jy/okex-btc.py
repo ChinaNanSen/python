@@ -10,6 +10,9 @@ exchange = ccxt.okex({
     'enableRateLimit': True,
 })
 
+# 设置日志级别
+exchange.logger.setLevel('ERROR')
+
 symbol = 'ETH/USDT'  # 选择交易对
 timeframe = '1m'  # 设定K线周期
 fast_ma_length = 5  # 快速均线长度
@@ -33,16 +36,16 @@ while True:
         btc_balance = balance['ETH']['free']
         usdt_balance = balance['USDT']['free']
 
-        if last_operation != 'sell' and fast_ma > slow_ma and btc_balance * data[-1, 4] > 10:
-            order = exchange.create_market_sell_order(symbol, btc_balance)
-            print('已卖出', order)
-            last_operation = 'sell'
-
-        elif last_operation != 'buy' and fast_ma < slow_ma and usdt_balance > 10:
-            buy_amount = usdt_balance / data[-1, 4]
+        if last_operation != 'buy' and fast_ma > slow_ma and usdt_balance > 10:
+            buy_amount = usdt_balance / data[-1, 4] * 0.99  # 乘以0.99以确保不超过可用余额
             order = exchange.create_market_buy_order(symbol, buy_amount)
             print('已买入', order)
             last_operation = 'buy'
+
+        elif last_operation != 'sell' and fast_ma < slow_ma and btc_balance * data[-1, 4] > 10:
+            order = exchange.create_market_sell_order(symbol, btc_balance)
+            print('已卖出', order)
+            last_operation = 'sell'
 
         time.sleep(60)
     except Exception as e:
