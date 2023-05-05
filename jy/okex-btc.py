@@ -31,10 +31,14 @@ while True:
         data = fetch_ohlcv()
         fast_ma = calculate_moving_average(data, fast_ma_length)
         slow_ma = calculate_moving_average(data, slow_ma_length)
+        print(fast_ma)
+        print(slow_ma)
 
         balance = exchange.fetch_balance()
         btc_balance = balance['ETH']['free']
         usdt_balance = balance['USDT']['free']
+        print(btc_balance)
+        print(usdt_balance)
 
         if last_operation != 'buy' and fast_ma > slow_ma and usdt_balance > 10:
             buy_amount = usdt_balance / data[-1, 4] * 0.99  # 乘以0.99以确保不超过可用余额
