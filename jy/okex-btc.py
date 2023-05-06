@@ -74,7 +74,7 @@ while True:
 
                 trade_info = f"{order['info']['ts']},Buy,{order['info']['fillPx']},{order['info']['fillSz']},N/A,{fee_in_usdt}"
                 print(trade_info)
-                log_trade_to_file('D:/work/vscode/mycode/devPython/python/jy/trades.csv', trade_info)
+                log_trade_to_file('./trades.csv', trade_info)
 
         elif last_operation != 'sell' and fast_ma[-1] < slow_ma[-1] and eth_balance * data[-1, 4] > 1:
             if eth_balance >= min_trade_amount:
@@ -95,7 +95,7 @@ while True:
 
                 trade_info = f"{order['info']['ts']},Sell,{order['info']['fillPx']},{order['info']['fillSz']},N/A,{fee_in_usdt}"
                 print(trade_info)
-                log_trade_to_file('D:/work/vscode/mycode/devPython/python/jy/trades.csv', trade_info)
+                log_trade_to_file('./trades.csv', trade_info)
 
         time.sleep(60 * 4 * 60)
     except Exception as e:
