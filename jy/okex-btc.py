@@ -32,7 +32,7 @@ exchange = ccxt.okex({
 })
 
 symbol = 'ETH/USDT'
-timeframe = '4h'
+timeframe = '15m'
 fast_ma_length = 5
 slow_ma_length = 20
 min_trade_amount = 0.0001
@@ -97,7 +97,7 @@ while True:
                 print(trade_info)
                 log_trade_to_file('./trades.csv', trade_info)
 
-        time.sleep(60 * 4 * 60)
+        time.sleep(60 * 15)
     except Exception as e:
         print(e)
         time.sleep(60)
