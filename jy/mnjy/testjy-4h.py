@@ -18,10 +18,8 @@ config.read('config.ini')
 apikey = config['OKX']['apikey']
 secretkey = config['OKX']['secretkey']
 passphrase = config['OKX']['passphrase']
-flag = config['OKX']['flag']
-
-
-flag = "1"  # 实盘:0 , 模拟盘:1
+flag = config['OKX']['flag'] # 实盘:0 , 模拟盘:1
+ 
 
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
