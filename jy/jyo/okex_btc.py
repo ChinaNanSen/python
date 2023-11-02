@@ -16,15 +16,14 @@ def calculate_performance_metrics(file_name):
     sharpe_ratio = (np.mean(daily_returns) * 252) / (np.std(daily_returns) * math.sqrt(252))
     return total_profit, profit_factor, sharpe_ratio
 
-
-def fetch_ohlcv():
+def fetch_ohlcv(exchange, symbol, timeframe):
     ohlcv = exchange.fetch_ohlcv(symbol, timeframe)
     return np.array(ohlcv)
 
 def calculate_moving_average(data, length):
     return np.convolve(data[:, 4], np.ones(length) / length, mode='valid')
 
-def fetch_order_fee(order_id, symbol):
+def fetch_order_fee(exchange, order_id, symbol):
     order_info = exchange.fetch_order(order_id, symbol)
     fee_currency = order_info['info']['feeCcy']
     fee_amount = abs(float(order_info['info']['fee']))
@@ -38,8 +37,8 @@ def log_trade_to_file(file_name, trade_info):
 
     with open(file_name, 'a') as f:
         total_profit, profit_factor, sharpe_ratio = calculate_performance_metrics(file_name)
-        trade_info += f',{total_profit},{profit_factor},{sharpe_ratio}'
-        f.write(trade_info + '\n')
+        trade_info = f"{trade_info['Timestamp']},{trade_info['Operation']},{trade_info['Price']},{trade_info['Amount']},{trade_info['Fee']},{total_profit},{profit_factor},{sharpe_ratio}\n"
+        f.write(trade_info)
         print(f"Logged trade: {trade_info}")
 
 exchange = ccxt.okex({
@@ -59,26 +58,24 @@ last_operation = None
 
 while True:
     try:
-        data = fetch_ohlcv()
+        data = fetch_ohlcv(exchange, symbol, timeframe)
         fast_ma = calculate_moving_average(data, fast_ma_length)
         slow_ma = calculate_moving_average(data, slow_ma_length)
-        print(fast_ma[-1])
-        print(slow_ma[-1])
 
         balance = exchange.fetch_balance()
         eth_balance = balance.get('ETH', {}).get('free', 0)
         usdt_balance = balance.get('USDT', {}).get('free', 0)
+        print(fast_ma[-1])
+        print(slow_ma[-1])
 
         if last_operation != 'buy' and fast_ma[-1] > slow_ma[-1] and usdt_balance > 1:
-            print("buy")
             amount = usdt_balance / data[-1, 4]
             if amount >= min_trade_amount:
                 order = exchange.create_market_buy_order(symbol, amount)
                 order_id = order['id']
-                fee_currency, fee_amount = fetch_order_fee(order_id, symbol)
+                fee_currency, fee_amount = fetch_order_fee(exchange, order_id, symbol)
 
-                last_operation = 'buy'
-
+                last_operation = 'buy# Assistant needs to continue the code'
                 fee_currency = order['info']['feeCcy']
                 fee_amount = float(order['info']['fee'])
                 if fee_currency != 'USDT':
@@ -89,15 +86,14 @@ while True:
                     fee_in_usdt = fee_amount
 
                 trade_info = {'Timestamp': order['datetime'], 'Operation': 'Buy', 'Price': order['info']['fillPx'], 'Amount': order['amount'], 'Fee': fee_in_usdt}
+                log_trade_to_file('trades.csv', trade_info)
                 print(trade_info)
-                log_trade_to_file('trades.json', trade_info)
 
         elif last_operation != 'sell' and fast_ma[-1] < slow_ma[-1] and eth_balance * data[-1, 4] > 1:
-            print("sell")
             if eth_balance >= min_trade_amount:
                 order = exchange.create_market_sell_order(symbol, eth_balance)
                 order_id = order['id']
-                fee_currency, fee_amount = fetch_order_fee(order_id,symbol)
+                fee_currency, fee_amount = fetch_order_fee(exchange, order_id, symbol)
 
                 last_operation = 'sell'
 
@@ -111,12 +107,11 @@ while True:
                     fee_in_usdt = fee_amount
 
                 trade_info = {'Timestamp': order['datetime'], 'Operation': 'Sell', 'Price': order['info']['fillPx'], 'Amount': order['amount'], 'Fee': fee_in_usdt}
+                log_trade_to_file('trades.csv', trade_info)
                 print(trade_info)
-                log_trade_to_file('trades.json', trade_info)
 
         time.sleep(60)
     except Exception as e:
         print(e)
+    # Consider adding more robust error handling here
         time.sleep(60)
-
-
