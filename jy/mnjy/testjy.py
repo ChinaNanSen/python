@@ -159,7 +159,7 @@ def jy():
             if ma15.iloc[15] > ma150.iloc[150]:
                 # 买入信号
                 ye = account("USDT")
-                print(ye)
+                
                 cb = ye["details"][0]["cashBal"]
 
                 if float(cb) > 10:
