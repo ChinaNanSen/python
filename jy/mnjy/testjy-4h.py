@@ -9,9 +9,10 @@ import time
 import finta
 
 # API 初始化
-apikey="1a191170-e307-41b3-a5b4-8a922a041bce"
-secretkey="6AB88801ADB8F7CC0B8B209E54326623"
-passphrase="Vevor@com123"
+apikey="xxxxxxxxxxxxxxxx"
+secretkey="xxxxxxxxxxxxxxxxx"
+passphrase="xxxxxxxxxxxxxx"
+
 
 flag = "1"  # 实盘:0 , 模拟盘:1
 
