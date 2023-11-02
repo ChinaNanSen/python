@@ -7,11 +7,18 @@ import matplotlib.pyplot as plt
 import json
 import time
 import finta
+import configparser
+
 
 # API 初始化
-apikey="xxxxxxxxxxxxxxxx"
-secretkey="xxxxxxxxxxxxxxxxx"
-passphrase="xxxxxxxxxxxxxx"
+# 从配置文件读取API初始化信息
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+apikey = config['OKX']['apikey']
+secretkey = config['OKX']['secretkey']
+passphrase = config['OKX']['passphrase']
+flag = config['OKX']['flag']
 
 
 flag = "1"  # 实盘:0 , 模拟盘:1
