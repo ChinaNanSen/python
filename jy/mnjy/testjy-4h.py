@@ -9,7 +9,6 @@ import time
 import finta
 import configparser
 
-
 # API 初始化
 # 从配置文件读取API初始化信息
 config = configparser.ConfigParser()
@@ -18,15 +17,14 @@ config.read('config.ini')
 apikey = config['OKX']['apikey']
 secretkey = config['OKX']['secretkey']
 passphrase = config['OKX']['passphrase']
-flag = config['OKX']['flag'] # 实盘:0 , 模拟盘:1
- 
+flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
+
 
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz="ETH-USDT"
-dbz="ETH"
-
+bz = "ETH-USDT"
+dbz = "ETH"
 
 
 # 设置字体
@@ -36,20 +34,17 @@ plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显�
 
 def tradedata():
     result = tradeAPI.get_orders_history(
-    instType="SPOT",
-    ordType="market,post_only,fok,ioc"
-)
+        instType="SPOT",
+        ordType="market,post_only,fok,ioc"
+    )
     return result
+
 
 def account(cb):
     result = accountAPI.get_account_balance(
         ccy=cb
     )
     return result["data"][0]
-    
-
-    
-        
 
 
 # # 获取历史数据
@@ -57,7 +52,6 @@ def account(cb):
 #     instId="BTC-USDT",
 #     # bar="5m"
 # )
-
 """
 bar	String	否	时间粒度，默认值1m
 如 [1m/3m/5m/15m/30m/1H/2H/4H]
@@ -88,31 +82,27 @@ confirm	String	K线状态
 """
 
 
-
-
-
-
-
-
-print("\033[34m~~~~~starting jy %s\033[0m"%dbz)
+print("\033[34m~~~~~starting jy %s\033[0m" % dbz)
 
 
 def plot_data(data, ma15, ma150, buy_signals, sell_signals):
-    plt.figure(figsize=(12,6))
-    
+    plt.figure(figsize=(12, 6))
+
     # 绘制收盘价格
     plt.plot(data.index, data['close'], label='价格', alpha=0.5)
-    
+
     # 绘制移动平均线
     plt.plot(ma15.index, ma15, label='15周期简单移动平均线', alpha=0.9)
     plt.plot(ma150.index, ma150, label='150周期简单移动平均线', alpha=0.9)
-    
+
     # 绘制买卖信号
     for date, price in buy_signals.items():
-        plt.plot(date, price, 'o', markersize=10, label='买信号' if date == list(buy_signals.keys())[0] else "", color='g')
+        plt.plot(date, price, 'o', markersize=10, label='买信号' if date ==
+                 list(buy_signals.keys())[0] else "", color='g')
     for date, price in sell_signals.items():
-        plt.plot(date, price, 'o', markersize=10, label='卖信号' if date == list(sell_signals.keys())[0] else "", color='r')
-    
+        plt.plot(date, price, 'o', markersize=10, label='卖信号' if date ==
+                 list(sell_signals.keys())[0] else "", color='r')
+
     plt.legend(loc='best')
     plt.title('价格、移动平均线和买卖信号')
     plt.xlabel('日期')
@@ -122,23 +112,22 @@ def plot_data(data, ma15, ma150, buy_signals, sell_signals):
 
 
 def jy():
- 
-    #---------测试代码
+
+    # ---------测试代码
     # ye = account("BTC")
     # print(ye)
     # exit(1001)
-    #--------------
+    # --------------
     buy_signals = {}
     sell_signals = {}
-
 
     # 检查交叉点
     if ma15.iloc[15] > ma150.iloc[150] and ma15.iloc[16] <= ma150.iloc[151]:
         # 买入信号
         ye = account("USDT")
         print(ye)
-        cb=ye["details"][0]["cashBal"]
-        
+        cb = ye["details"][0]["cashBal"]
+
         if float(cb) > 10:
             result = tradeAPI.place_order(
                 instId=bz,
@@ -148,20 +137,19 @@ def jy():
                 side="buy",
                 ordType="market",
                 sz=cb  # 买入100 USDT的BTC
-                
+
             )
-            buy_signals[data1.index[15]] = data1['close'].iloc[15]           
+            buy_signals[data1.index[15]] = data1['close'].iloc[15]
             print("\033[32m++++hit++buy\033[0m")
-            
+
         else:
             print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
-          
 
     elif ma15.iloc[15] < ma150.iloc[150] and ma15.iloc[16] >= ma150.iloc[151]:
         # 卖出信号
         ye = account(dbz)
         # print(ye)
-        cb=ye["details"][0]["cashBal"]
+        cb = ye["details"][0]["cashBal"]
         if ye["details"] != 0:
             result = tradeAPI.place_order(
                 # instId="BTC-USDT",
@@ -175,46 +163,48 @@ def jy():
             )
             sell_signals[data1.index[15]] = data1['close'].iloc[15]
             print("\033[32m---hit-----sell\033[0m")
-            
+
         else:
             print("\033[31msell操作忽略,BTC余额不足\033[0m")
-            
+
     else:
         print("\033[33m###########miss\033[0m")
 
-
     plot_data(data1, ma15, ma150, buy_signals, sell_signals)
 
-if __name__=="__main__":
 
-    while True:  
+if __name__ == "__main__":
+
+    while True:
         # 获取历史数据
         historical_data = marketDataAPI.get_candlesticks(
             instId=bz,
             # before="",
             # bar="1H",
             limit="160"
-        ) 
-        
-        data1 = pd.DataFrame(historical_data["data"],columns=["ts","open","high","low","close","vol","volCcy","volCcyQuote","confirm"])
+        )
+
+        data1 = pd.DataFrame(historical_data["data"], columns=[
+                             "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
         # print(data["c"])  # 打印data的前5行以检查数据
-       
-        data1['ts'] = data1['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
+
+        data1['ts'] = data1['ts'].apply(
+            lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
         # 格式化 datetime 对象为字符串
         data1['ts'] = data1['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
         # 将 'ts' 列重新设置为索引
         data1.set_index('ts', inplace=True)
         # print(data1['close'])
-      
 
-        ma15=finta.TA.SMA(data1, 15) 
-        ma150=finta.TA.SMA(data1, 150) 
+        ma15 = finta.TA.SMA(data1, 15)
+        ma150 = finta.TA.SMA(data1, 150)
 
         # print(ma15.iloc[15])
         # print('-----------')
         # print(ma150.iloc[150])
         # exit(101)
 
-        print("%s\n%s\n%s\n%s"%(ma15.iloc[15] , ma150.iloc[150] , ma15.iloc[16] , ma150.iloc[151]))
+        print("%s\n%s\n%s\n%s" %
+              (ma15.iloc[15], ma150.iloc[150], ma15.iloc[16], ma150.iloc[151]))
         time.sleep(3)
         jy()
