@@ -40,11 +40,27 @@ def tradedata():
     return result
 
 
+# def account(cb):
+#     result = accountAPI.get_account_balance(
+#         ccy=cb
+#     )
+#     return result["data"][0]
+
+
 def account(cb):
-    result = accountAPI.get_account_balance(
-        ccy=cb
-    )
-    return result["data"][0]
+    for attempt in range(3):  # 尝试次数
+        try:
+            result = accountAPI.get_account_balance(
+                ccy=cb
+            )
+            return result["data"][0]
+        except Exception as e:
+            print(f"Error: {e}")
+            if attempt < 2:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
+                time.sleep(2)
+            else:
+                print("Failed to get account balance after 3 attempts.")
+                return None  # 或者返回一个错误值/异常，让调用者知道请求失败
 
 
 # # 获取历史数据
@@ -122,7 +138,8 @@ def jy():
     sell_signals = {}
 
     # 检查交叉点
-    if ma15.iloc[15] > ma150.iloc[150] and ma15.iloc[16] <= ma150.iloc[151]:
+    # if ma15.iloc[15] > ma150.iloc[150] and ma15.iloc[16] <= ma150.iloc[151]:
+    if ma15.iloc[15] > ma150.iloc[150]:
         # 买入信号
         ye = account("USDT")
         print(ye)
@@ -145,7 +162,8 @@ def jy():
         else:
             print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
-    elif ma15.iloc[15] < ma150.iloc[150] and ma15.iloc[16] >= ma150.iloc[151]:
+    # elif ma15.iloc[15] < ma150.iloc[150] and ma15.iloc[16] >= ma150.iloc[151]:
+    elif ma15.iloc[15] < ma150.iloc[150]:
         # 卖出信号
         ye = account(dbz)
         # print(ye)
@@ -170,7 +188,8 @@ def jy():
     else:
         print("\033[33m###########miss\033[0m")
 
-    plot_data(data1, ma15, ma150, buy_signals, sell_signals)
+    # 画图功能
+    # plot_data(data1, ma15, ma150, buy_signals, sell_signals)
 
 
 if __name__ == "__main__":
@@ -204,7 +223,7 @@ if __name__ == "__main__":
         # print(ma150.iloc[150])
         # exit(101)
 
-        print("%s\n%s\n%s\n%s" %
-              (ma15.iloc[15], ma150.iloc[150], ma15.iloc[16], ma150.iloc[151]))
+        print("%s\n%s\n" %
+              (ma15.iloc[15], ma150.iloc[150]))
         time.sleep(3)
         jy()
