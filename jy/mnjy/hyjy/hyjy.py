@@ -23,8 +23,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "ETH-USDT-SWAP"
-dbz = "ETH"
+bz = "BTC-USDT-SWAP"
+dbz = "BTC"
 
 
 # 设置字体
@@ -166,12 +166,14 @@ def jy():
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cross",  #保证金模式：isolated：逐仓 ；cross：全仓
-                        ccy="BTC",
+                        # ccy=dbz,
                         posSide="long",  #选择 long 或 short
                         side="buy",
-                        ordType="market",
-                        sz="0.1"  # 买入100 USDT的BTC
+                        ordType="market",  # market 市价单 ，limit 限价单
+                        # px="34430",
+                        sz="1"  # 买入100 USDT的BTC
                     )
+                    print(result)
                     buy_signals[data1.index[15]] = data1['close'].iloc[15]
                     print("\033[32m++++hit++buy\033[0m")
                 else:
@@ -182,21 +184,21 @@ def jy():
                 ye = account(dbz)
                 cb = ye["details"][0]["cashBal"]
                 if ye["details"] != 0:
-                    # result = tradeAPI.place_order(
-                    #     instId=bz,
-                    #     tdMode="cash",
-                    #     ccy=dbz,
-                    #     side="sell",
-                    #     ordType="market",
-                    #     sz=cb  # 卖出100 USDT的BTC
-                    # )
-
-                    # 市价全平
-                    result = tradeAPI.close_positions(
+                    result = tradeAPI.place_order(
                         instId=bz,
-                        # ccy='BTC',
-                        mgnMode="cross"
+                        tdMode="cross",  #保证金模式：isolated：逐仓 ；cross：全仓
+                        # ccy=dbz,
+                        posSide="short",  #选择 long 或 short
+                        side="sell",
+                        ordType="market",  # market 市价单 ，limit 限价单
+                        # px="34381",
+                        sz="0.1"  # 买入100 USDT的BTC
                     )
+                    # result = tradeAPI.close_positions(
+                    #     instId=bz,
+                    #     # ccy='BTC',
+                    #     mgnMode="cross"
+                    # )
                     print(result)
 
                     sell_signals[data1.index[15]] = data1['close'].iloc[15]
