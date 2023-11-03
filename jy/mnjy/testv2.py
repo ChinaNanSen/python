@@ -8,6 +8,8 @@ import time
 import finta
 import configparser
 
+#测试
+
 # API 初始化
 # 从配置文件读取API初始化信息
 config = configparser.ConfigParser()
