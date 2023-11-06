@@ -47,6 +47,16 @@ def tradedata():
 #     return result["data"][0]
 
 
+# 通过 ordId 查询订单
+
+def getOrder(oid):
+    result = tradeAPI.get_order(
+        instId=bz,
+        ordId=oid
+    )
+    return result
+
+
 def account(cb):
     for attempt in range(3):  # 尝试次数
         try:
@@ -128,6 +138,9 @@ def plot_data(data, ma15, ma150, buy_signals, sell_signals):
 
 
 def jy():
+    #跟踪全局变量状态
+    global position_opened  
+
     for attempt in range(3):  # 尝试次数
         try:
             # 获取历史数据
@@ -155,52 +168,113 @@ def jy():
             # 检查交叉点并执行交易逻辑
             buy_signals = {}
             sell_signals = {}
+            
+            if not position_opened:
+                if ma15.iloc[15] > ma150.iloc[150]:
+                    # 买入信号
+                    ye = account("USDT")
+                    
+                    ccb = ye["details"][0]["availBal"]
+                    cb = float(ccb) / 2
 
-            if ma15.iloc[15] > ma150.iloc[150]:
-                # 买入信号
-                ye = account("USDT")
-                
-                cb = ye["details"][0]["cashBal"]
+                    # print(ye)
+                    
+                    # exit(104)
 
-                if float(cb) > 10:
-                    result = tradeAPI.place_order(
-                        instId=bz,
-                        tdMode="cash",
-                        ccy="USDT",
-                        side="buy",
-                        ordType="market",
-                        sz=cb  # 买入100 USDT的BTC
-                    )
-                    buy_signals[data1.index[15]] = data1['close'].iloc[15]
-                    print("\033[32m++++hit++buy\033[0m")
+                    if float(cb) > 10:
+                        result = tradeAPI.place_order(
+                            instId=bz,
+                            tdMode="cash",
+                            clOrdId="buy"+str(n),
+                            ccy="USDT",
+                            side="buy",
+                            ordType="market",
+                            sz=cb  # 买入100 USDT的BTC
+                            
+                        )
+                        buy_signals[data1.index[15]] = data1['close'].iloc[15]
+
+                        print(result)
+                        # 更新持仓状态
+                        position_opened = True
+                        #订单ID
+                        oid = result['data'][0]['ordId']
+                        oidict = {}
+                        #订单币币余额            
+                        bye=getOrder(oid)['data'][0]['fillSz'] 
+                        #订单币币余额消费
+                        bxf=getOrder(oid)['data'][0]['sz']
+                        #成交价
+                        bcj=getOrder(oid)['data'][0]['fillPx']
+                        #订单手续费
+                        bsx=getOrder(oid)['data'][0]['fee']
+                        oidict['oid'] = "buy"+str(n)
+                        oidict['bye'] = bye
+                        oidict['bxf'] = bxf
+                        oidict['bcj'] = bcj
+                        oidict['bsx'] = bsx
+                        dd.append(oidict)
+                        # exit(103)
+
+                        print("\033[32m++++hit++buy\033[0m")
+                    else:
+                        print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
+
+                elif ma15.iloc[15] < ma150.iloc[150]:
+                    # 卖出信号
+                    # ye = account(dbz)
+                    
+                    # cb = ye["details"][0]["availBal"]
+                    try:
+                        bye=getOrder("buy"+str(n))['data'][0]['fillSz']
+                    except Exception as es:
+                        print(f"\033[31m没有买入订单,忽略: {es}\033[0m")
+                        break
+
+                    if float(bye) != 0:
+                        uresult = tradeAPI.place_order(
+                            instId=bz,
+                            tdMode="cash",
+                            clOrdId="sell"+str(n),
+                            ccy=dbz,
+                            side="sell",
+                            ordType="market",
+                            sz=bye  # 卖出100 USDT的BTC
+                        )
+                        print(uresult)
+                        #更新持仓状态
+                        position_opened = False
+                        sell_signals[data1.index[15]] = data1['close'].iloc[15]
+                        
+                        uoid = uresult['data'][0]['ordId']
+                        # print(getOrder(oid))
+                        #订单币币余额            
+                        uye=getOrder(uoid)['data'][0]['fillSz']
+                        #订单币币收入
+                        uxf=getOrder(uoid)['data'][0]['sz']
+                        #成交价
+                        ucj=getOrder(uoid)['data'][0]['fillPx']
+                        #订单手续费
+                        usx=getOrder(uoid)['data'][0]['fee']
+                        oidict['uoid'] = "sell"+str(n)
+                        oidict['ubye'] = uye
+                        oidict['ubxf'] = uxf
+                        oidict['ubcj'] = ucj
+                        oidict['ubsx'] = usx
+                        dd.append(oidict)
+                        # exit(103)
+
+                        print("\033[32m---hit-----sell\033[0m")
+                    else:
+                        print("\033[31msell操作忽略,BTC余额不足\033[0m")
                 else:
-                    print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
+                    print("\033[33m###########miss\033[0m")
 
-            elif ma15.iloc[15] < ma150.iloc[150]:
-                # 卖出信号
-                ye = account(dbz)
-                cb = ye["details"][0]["cashBal"]
-                if ye["details"] != 0:
-                    result = tradeAPI.place_order(
-                        instId=bz,
-                        tdMode="cash",
-                        ccy=dbz,
-                        side="sell",
-                        ordType="market",
-                        sz=cb  # 卖出100 USDT的BTC
-                    )
-                    sell_signals[data1.index[15]] = data1['close'].iloc[15]
-                    print("\033[32m---hit-----sell\033[0m")
-                else:
-                    print("\033[31msell操作忽略,BTC余额不足\033[0m")
-            else:
-                print("\033[33m###########miss\033[0m")
+                # 画图功能
+                # plot_data(data1, ma15, ma150, buy_signals, sell_signals)
 
-            # 画图功能
-            # plot_data(data1, ma15, ma150, buy_signals, sell_signals)
-
-            # 如果代码运行成功，跳出循环
-            break
+                # 如果代码运行成功，跳出循环
+                break
         except Exception as e:
             print(f"Error: {e}")
             if attempt < 2:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
@@ -210,6 +284,9 @@ def jy():
 
 
 if __name__ == "__main__":
+    dd = []
+    n = 0
+    position_opened = False
     while True:
         time.sleep(3)
         jy()

@@ -156,6 +156,7 @@ def jy():
                 sz=cb  # 买入100 USDT的BTC
 
             )
+            print(result)
             buy_signals[data1.index[15]] = data1['close'].iloc[15]
             print("\033[32m++++hit++buy\033[0m")
 

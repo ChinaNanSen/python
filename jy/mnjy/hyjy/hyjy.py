@@ -160,7 +160,7 @@ def jy():
                 # 买入信号
                 ye = account(dbz)
                 
-                cb = ye["details"][0]["cashBal"]
+                cb = ye["details"][0]["availBal"]
 
                 if float(cb) >= 1:
                     result = tradeAPI.place_order(
@@ -182,7 +182,7 @@ def jy():
             elif ma15.iloc[15] < ma150.iloc[150]:
                 # 卖出信号
                 ye = account(dbz)
-                cb = ye["details"][0]["cashBal"]
+                cb = ye["details"][0]["availBal"]
                 if ye["details"] != 0:
                     result = tradeAPI.place_order(
                         instId=bz,
