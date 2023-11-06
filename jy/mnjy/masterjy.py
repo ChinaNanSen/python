@@ -239,7 +239,7 @@ def jy():
                     print(f"\033[31m,没有买入订单,忽略: {es} {byex}\033[0m")
                     break
 
-                if float(bye) != 0:
+                if float(byex) != 0:
                     uresult = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
@@ -247,7 +247,7 @@ def jy():
                         ccy=dbz,
                         side="sell",
                         ordType="market",
-                        sz=bye  # 卖出100 USDT的BTC
+                        sz=byex  # 卖出100 USDT的BTC
                     )
                     print(uresult)
                     #更新持仓状态
