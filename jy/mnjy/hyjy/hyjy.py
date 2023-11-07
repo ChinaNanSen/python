@@ -32,6 +32,7 @@ dbz = "BTC"
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 指定默认字体为黑体
 plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
 
+
 def getOrder(oid):
     result = tradeAPI.get_order(
         instId=bz,
@@ -40,9 +41,11 @@ def getOrder(oid):
     )
     return result
 
+
 def generate_order_id():
     # 生成一个新的随机订单号
     return random.randint(10000, 99999)
+
 
 def tradedata():
     result = tradeAPI.get_orders_history(
@@ -134,9 +137,12 @@ def plot_data(data, ma15, ma150, buy_signals, sell_signals):
 
 def jy():
 
-    #跟踪全局变量状态
-    global position_opened  
+    # 跟踪全局变量状态
+    global position_opened
     global order_id  # 使用global关键字声明order_id是全局变量
+
+    # print(getOrder('641999281087422464'))
+    # exit(1006)
 
     for attempt in range(3):  # 尝试次数
         try:
@@ -167,24 +173,31 @@ def jy():
             sell_signals = {}
 
             if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-                # 买入信号
-                ye = account(dbz)
-                
-                cb = ye["details"][0]["availBal"]
 
-                if float(cb) >= 1:
+                order_id = generate_order_id()
+                # 买入信号
+                ye = account("USDT")
+
+                ccb = ye["details"][0]["availBal"]
+                cb = float(ccb) / 2
+                print(ye)
+                print(position_opened)
+                # exit(1023)
+
+                if float(cb) >= 100:
                     result = tradeAPI.place_order(
                         instId=bz,
-                        tdMode="cross",  #保证金模式：isolated：逐仓 ；cross：全仓
+                        tdMode="cross",  # 保证金模式：isolated：逐仓 ；cross：全仓
                         # ccy=dbz,
-                        posSide="long",  #选择 long 或 short
+                        posSide="long",  # 选择 long 或 short
                         side="buy",
+                        clOrdId="buy"+str(order_id),
                         ordType="market",  # market 市价单 ，limit 限价单
                         # px="34430",
-                        sz="1"  # 买入100 USDT的BTC
+                        sz=cb  # 买入100 USDT的BTC
                     )
                     print(result)
-                     # 更新持仓状态
+                    # 更新持仓状态
                     position_opened = False
 
                     buy_signals[data1.index[15]] = data1['close'].iloc[15]
@@ -196,29 +209,18 @@ def jy():
 
                 print(order_id)
                 # 卖出信号
-                ye = account(dbz)
-                # cb = ye["details"][0]["availBal"]
                 try:
-                    byex=getOrder("buy"+str(order_id))['data'][0]['fillSz']
+                    byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
                 except Exception as es:
                     print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
                     break
 
                 if float(byex) != 0:
-                #     result = tradeAPI.place_order(
-                #         instId=bz,
-                #         tdMode="cross",  #保证金模式：isolated：逐仓 ；cross：全仓
-                #         # ccy=dbz,
-                #         posSide="short",  #选择 long 或 short
-                #         side="sell",
-                #         ordType="market",  # market 市价单 ，limit 限价单
-                #         # px="34381",
-                #         sz="0.1"  # 买入100 USDT的BTC
-                #     )
-                    
+
                     result = tradeAPI.close_positions(
                         instId=bz,
                         # ccy='BTC',
+                        clOrdId="sell"+str(order_id),
                         posSide="long",
                         mgnMode="cross"
                     )
