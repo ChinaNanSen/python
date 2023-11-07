@@ -200,7 +200,7 @@ def jy():
                         instId=bz,
                         tdMode="cash",
                         # clOrdId="buy"+str(m),
-                        clOrdId="buy"+order_id,
+                        clOrdId="buy"+str(order_id),
                         ccy="USDT",
                         side="buy",
                         ordType="market",
@@ -225,7 +225,7 @@ def jy():
                     bcj=getOrder(oid)['data'][0]['fillPx']
                     #订单手续费
                     bsx=getOrder(oid)['data'][0]['fee']
-                    oidict['oid'] = "buy"+order_id
+                    oidict['oid'] = "buy"+str(order_id)
                     oidict['bye'] = bye
                     oidict['bxf'] = bxf
                     oidict['bcj'] = bcj
@@ -244,7 +244,7 @@ def jy():
                 
                 # cb = ye["details"][0]["availBal"]
                 try:
-                    byex=getOrder("buy"+order_id)['data'][0]['fillSz']
+                    byex=getOrder("buy"+str(order_id))['data'][0]['fillSz']
                 except Exception as es:
                     print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
                     break
@@ -253,7 +253,7 @@ def jy():
                     uresult = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="sell"+order_id,
+                        clOrdId="sell"+str(order_id),
                         ccy=dbz,
                         side="sell",
                         ordType="market",
@@ -275,7 +275,7 @@ def jy():
                     ucj=getOrder(uoid)['data'][0]['fillPx']
                     #订单手续费
                     usx=getOrder(uoid)['data'][0]['fee']
-                    oidict['uoid'] = "sell"+order_id
+                    oidict['uoid'] = "sell"+str(order_id)
                     oidict['ubye'] = uye
                     oidict['ubxf'] = uxf
                     oidict['ubcj'] = ucj
