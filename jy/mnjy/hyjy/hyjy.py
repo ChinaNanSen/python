@@ -8,6 +8,7 @@ import json
 import time
 import finta
 import configparser
+import random
 
 # API 初始化
 # 从配置文件读取API初始化信息
@@ -31,6 +32,17 @@ dbz = "BTC"
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 指定默认字体为黑体
 plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
 
+def getOrder(oid):
+    result = tradeAPI.get_order(
+        instId=bz,
+        # ordId=oid,
+        clOrdId=oid
+    )
+    return result
+
+def generate_order_id():
+    # 生成一个新的随机订单号
+    return random.randint(10000, 99999)
 
 def tradedata():
     result = tradeAPI.get_orders_history(
@@ -38,13 +50,6 @@ def tradedata():
         ordType="market,post_only,fok,ioc"
     )
     return result
-
-
-# def account(cb):
-#     result = accountAPI.get_account_balance(
-#         ccy=cb
-#     )
-#     return result["data"][0]
 
 
 def account(cb):
@@ -128,6 +133,11 @@ def plot_data(data, ma15, ma150, buy_signals, sell_signals):
 
 
 def jy():
+
+    #跟踪全局变量状态
+    global position_opened  
+    global order_id  # 使用global关键字声明order_id是全局变量
+
     for attempt in range(3):  # 尝试次数
         try:
             # 获取历史数据
@@ -156,7 +166,7 @@ def jy():
             buy_signals = {}
             sell_signals = {}
 
-            if ma15.iloc[15] > ma150.iloc[150]:
+            if ma15.iloc[15] > ma150.iloc[150] and position_opened:
                 # 买入信号
                 ye = account(dbz)
                 
@@ -174,31 +184,44 @@ def jy():
                         sz="1"  # 买入100 USDT的BTC
                     )
                     print(result)
+                     # 更新持仓状态
+                    position_opened = False
+
                     buy_signals[data1.index[15]] = data1['close'].iloc[15]
                     print("\033[32m++++hit++buy\033[0m")
                 else:
                     print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
-            elif ma15.iloc[15] < ma150.iloc[150]:
+            elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
+
+                print(order_id)
                 # 卖出信号
                 ye = account(dbz)
-                cb = ye["details"][0]["availBal"]
-                if ye["details"] != 0:
-                    result = tradeAPI.place_order(
+                # cb = ye["details"][0]["availBal"]
+                try:
+                    byex=getOrder("buy"+str(order_id))['data'][0]['fillSz']
+                except Exception as es:
+                    print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
+                    break
+
+                if float(byex) != 0:
+                #     result = tradeAPI.place_order(
+                #         instId=bz,
+                #         tdMode="cross",  #保证金模式：isolated：逐仓 ；cross：全仓
+                #         # ccy=dbz,
+                #         posSide="short",  #选择 long 或 short
+                #         side="sell",
+                #         ordType="market",  # market 市价单 ，limit 限价单
+                #         # px="34381",
+                #         sz="0.1"  # 买入100 USDT的BTC
+                #     )
+                    
+                    result = tradeAPI.close_positions(
                         instId=bz,
-                        tdMode="cross",  #保证金模式：isolated：逐仓 ；cross：全仓
-                        # ccy=dbz,
-                        posSide="short",  #选择 long 或 short
-                        side="sell",
-                        ordType="market",  # market 市价单 ，limit 限价单
-                        # px="34381",
-                        sz="0.1"  # 买入100 USDT的BTC
+                        # ccy='BTC',
+                        posSide="long",
+                        mgnMode="cross"
                     )
-                    # result = tradeAPI.close_positions(
-                    #     instId=bz,
-                    #     # ccy='BTC',
-                    #     mgnMode="cross"
-                    # )
                     print(result)
 
                     sell_signals[data1.index[15]] = data1['close'].iloc[15]
@@ -223,6 +246,8 @@ def jy():
 
 
 if __name__ == "__main__":
+    position_opened = True
     while True:
         time.sleep(3)
         jy()
+        print(position_opened)

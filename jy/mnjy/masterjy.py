@@ -199,7 +199,6 @@ def jy():
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        # clOrdId="buy"+str(m),
                         clOrdId="buy"+str(order_id),
                         ccy="USDT",
                         side="buy",
@@ -304,12 +303,10 @@ def jy():
 
 if __name__ == "__main__":
     dd = []
-    # n = 0
     position_opened = True
     while True:
         
         time.sleep(3)
-        # m = n + 1
         jy()
         print(position_opened)
         
