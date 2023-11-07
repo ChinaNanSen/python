@@ -8,6 +8,7 @@ import json
 import time
 import finta
 import configparser
+import random
 
 # API 初始化
 # 从配置文件读取API初始化信息
@@ -72,6 +73,11 @@ def account(cb):
             else:
                 print("Failed to get account balance after 3 attempts.")
                 return None  # 或者返回一个错误值/异常，让调用者知道请求失败
+            
+
+def generate_order_id():
+    # 生成一个新的随机订单号
+    return random.randint(10000, 99999)
 
 
 # # 获取历史数据
@@ -141,6 +147,7 @@ def plot_data(data, ma15, ma150, buy_signals, sell_signals):
 def jy():
     #跟踪全局变量状态
     global position_opened  
+    global order_id  # 使用global关键字声明order_id是全局变量
 
     for attempt in range(3):  # 尝试次数
         try:
@@ -187,11 +194,13 @@ def jy():
                 # exit(104)
 
                 if float(cb) > 10:
-                    
+                    order_id = generate_order_id() 
+                    print(order_id)
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="buy"+str(m),
+                        # clOrdId="buy"+str(m),
+                        clOrdId="buy"+order_id,
                         ccy="USDT",
                         side="buy",
                         ordType="market",
@@ -216,7 +225,7 @@ def jy():
                     bcj=getOrder(oid)['data'][0]['fillPx']
                     #订单手续费
                     bsx=getOrder(oid)['data'][0]['fee']
-                    oidict['oid'] = "buy"+str(m)
+                    oidict['oid'] = "buy"+order_id
                     oidict['bye'] = bye
                     oidict['bxf'] = bxf
                     oidict['bcj'] = bcj
@@ -229,21 +238,22 @@ def jy():
                     print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
             elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
+                print(order_id)
                 # 卖出信号
                 # ye = account(dbz)
                 
                 # cb = ye["details"][0]["availBal"]
                 try:
-                    byex=getOrder("buy"+str(m))['data'][0]['fillSz']
+                    byex=getOrder("buy"+order_id)['data'][0]['fillSz']
                 except Exception as es:
                     print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
                     break
-
+                
                 if float(byex) != 0:
                     uresult = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="sell"+str(m),
+                        clOrdId="sell"+order_id,
                         ccy=dbz,
                         side="sell",
                         ordType="market",
@@ -265,7 +275,7 @@ def jy():
                     ucj=getOrder(uoid)['data'][0]['fillPx']
                     #订单手续费
                     usx=getOrder(uoid)['data'][0]['fee']
-                    oidict['uoid'] = "sell"+str(m)
+                    oidict['uoid'] = "sell"+order_id
                     oidict['ubye'] = uye
                     oidict['ubxf'] = uxf
                     oidict['ubcj'] = ucj
@@ -294,13 +304,13 @@ def jy():
 
 if __name__ == "__main__":
     dd = []
-    n = 0
+    # n = 0
     position_opened = True
     while True:
         
         time.sleep(3)
-        m = n + 1
+        # m = n + 1
         jy()
         print(position_opened)
-        print(m)
+        
         print(dd)
