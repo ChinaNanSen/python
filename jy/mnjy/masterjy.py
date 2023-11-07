@@ -191,7 +191,7 @@ def jy():
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="buy"+str(n),
+                        clOrdId="buy"+str(m),
                         ccy="USDT",
                         side="buy",
                         ordType="market",
@@ -216,7 +216,7 @@ def jy():
                     bcj=getOrder(oid)['data'][0]['fillPx']
                     #订单手续费
                     bsx=getOrder(oid)['data'][0]['fee']
-                    oidict['oid'] = "buy"+str(n)
+                    oidict['oid'] = "buy"+str(m)
                     oidict['bye'] = bye
                     oidict['bxf'] = bxf
                     oidict['bcj'] = bcj
@@ -234,7 +234,7 @@ def jy():
                 
                 # cb = ye["details"][0]["availBal"]
                 try:
-                    byex=getOrder("buy"+str(n))['data'][0]['fillSz']
+                    byex=getOrder("buy"+str(m))['data'][0]['fillSz']
                 except Exception as es:
                     print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
                     break
@@ -243,7 +243,7 @@ def jy():
                     uresult = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="sell"+str(n),
+                        clOrdId="sell"+str(m),
                         ccy=dbz,
                         side="sell",
                         ordType="market",
@@ -265,7 +265,7 @@ def jy():
                     ucj=getOrder(uoid)['data'][0]['fillPx']
                     #订单手续费
                     usx=getOrder(uoid)['data'][0]['fee']
-                    oidict['uoid'] = "sell"+str(n)
+                    oidict['uoid'] = "sell"+str(m)
                     oidict['ubye'] = uye
                     oidict['ubxf'] = uxf
                     oidict['ubcj'] = ucj
@@ -299,8 +299,8 @@ if __name__ == "__main__":
     while True:
         
         time.sleep(3)
-        n = n + 1
+        m = n + 1
         jy()
         print(position_opened)
-        print(n)
+        print(m)
         print(dd)
