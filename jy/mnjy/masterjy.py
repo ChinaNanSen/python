@@ -264,7 +264,7 @@ def jy():
                     sell_signals[data1.index[15]] = data1['close'].iloc[15]
 
                     uoid = uresult['data'][0]['ordId']
-                    # print(getOrder(oid))
+                    print(uoid)
                     # 订单币币余额
                     uye = getOrder(uoid)['data'][0]['fillSz']
                     # 订单币币收入

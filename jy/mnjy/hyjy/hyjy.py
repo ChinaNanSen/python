@@ -179,12 +179,13 @@ def jy():
                 ye = account("USDT")
 
                 ccb = ye["details"][0]["availBal"]
-                cb = float(ccb) / 2
-                print(ye)
+                cb = float(ccb) // 2
+                # print(ye)
                 print(position_opened)
                 # exit(1023)
-
+                print(cb)
                 if float(cb) >= 100:
+                    
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cross",  # 保证金模式：isolated：逐仓 ；cross：全仓
@@ -225,6 +226,8 @@ def jy():
                         mgnMode="cross"
                     )
                     print(result)
+                    
+                    position_opened = True
 
                     sell_signals[data1.index[15]] = data1['close'].iloc[15]
                     print("\033[32m---hit-----sell\033[0m")
