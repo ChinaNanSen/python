@@ -191,7 +191,7 @@ def jy():
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="buy"+str(m),
+                        clOrdId="buy"+str(n),
                         ccy="USDT",
                         side="buy",
                         ordType="market",
@@ -216,7 +216,7 @@ def jy():
                     bcj=getOrder(oid)['data'][0]['fillPx']
                     #订单手续费
                     bsx=getOrder(oid)['data'][0]['fee']
-                    oidict['oid'] = "buy"+str(m)
+                    oidict['oid'] = "buy"+str(n)
                     oidict['bye'] = bye
                     oidict['bxf'] = bxf
                     oidict['bcj'] = bcj
@@ -234,16 +234,16 @@ def jy():
                 
                 # cb = ye["details"][0]["availBal"]
                 try:
-                    byex=getOrder("buy"+str(m))['data'][0]['fillSz']
+                    byex=getOrder("buy"+str(n))['data'][0]['fillSz']
                 except Exception as es:
-                    print(f"\033[31m,没有买入订单,忽略: {es} {byex}\033[0m")
+                    print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
                     break
 
                 if float(byex) != 0:
                     uresult = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cash",
-                        clOrdId="sell"+str(m),
+                        clOrdId="sell"+str(n),
                         ccy=dbz,
                         side="sell",
                         ordType="market",
@@ -265,7 +265,7 @@ def jy():
                     ucj=getOrder(uoid)['data'][0]['fillPx']
                     #订单手续费
                     usx=getOrder(uoid)['data'][0]['fee']
-                    oidict['uoid'] = "sell"+str(m)
+                    oidict['uoid'] = "sell"+str(n)
                     oidict['ubye'] = uye
                     oidict['ubxf'] = uxf
                     oidict['ubcj'] = ucj
@@ -299,7 +299,8 @@ if __name__ == "__main__":
     while True:
         
         time.sleep(3)
-        m = n + 1
+        n = n + 1
         jy()
-        
+        print(position_opened)
+        print(n)
         print(dd)
