@@ -150,7 +150,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                # bar="1H",
+                bar="15m",
                 limit="160"
             )
 
@@ -179,23 +179,27 @@ def jy():
                 ye = account("USDT")
 
                 ccb = ye["details"][0]["availBal"]
-                cb = float(ccb) // 2
+                cb = float(ccb) / 2  
                 # print(ye)
                 print(position_opened)
                 # exit(1023)
                 print(cb)
+
+                # exit(1036)
                 if float(cb) >= 100:
                     
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cross",  # 保证金模式：isolated：逐仓 ；cross：全仓
                         # ccy=dbz,
+                        # posSide="short",  # 选择 long 或 short
+                        # side="sell", 
                         posSide="long",  # 选择 long 或 short
                         side="buy",
                         clOrdId="buy"+str(order_id),
                         ordType="market",  # market 市价单 ，limit 限价单
                         # px="34430",
-                        sz=cb  # 买入100 USDT的BTC
+                        sz="300"  # 买入100 USDT的BTC
                     )
                     print(result)
                     # 更新持仓状态

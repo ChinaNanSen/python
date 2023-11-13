@@ -86,16 +86,16 @@ def generate_order_id():
 #     # bar="5m"
 # )
 """
-bar	String	否	时间粒度，默认值1m
+bar	String	否	时间粒度,默认值1m
 如 [1m/3m/5m/15m/30m/1H/2H/4H]
-香港时间开盘价k线：[6H/12H/1D/2D/3D/1W/1M/3M]
-UTC时间开盘价k线：[/6Hutc/12Hutc/1Dutc/2Dutc/3Dutc/1Wutc/1Mutc/3Mutc]
+香港时间开盘价k线:[6H/12H/1D/2D/3D/1W/1M/3M]
+UTC时间开盘价k线:[/6Hutc/12Hutc/1Dutc/2Dutc/3Dutc/1Wutc/1Mutc/3Mutc]
 """
 
 # 转换数据到 DataFrame
 
 """
-ts	String	开始时间，Unix时间戳的毫秒数格式，如 1597026383085
+ts	String	开始时间,Unix时间戳的毫秒数格式,如 1597026383085
 o	String	开盘价格
 h	String	最高价格
 l	String	最低价格
@@ -107,10 +107,10 @@ volCcy	String	交易量，以币为单位
 如果是衍生品合约，数值为交易货币的数量。
 如果是币币/币币杠杆，数值为计价货币的数量。
 volCcyQuote	String	交易量，以计价货币为单位
-如：BTC-USDT 和 BTC-USDT-SWAP, 单位均是 USDT；
+如:BTC-USDT 和 BTC-USDT-SWAP, 单位均是 USDT;
 BTC-USD-SWAP 单位是 USD
 confirm	String	K线状态
-0 代表 K 线未完结，1 代表 K 线已完结。
+0 代表 K 线未完结,1 代表 K 线已完结。
 
 """
 
@@ -155,7 +155,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                # bar="1H",
+                bar="15m",
                 limit="160"
             )
 
