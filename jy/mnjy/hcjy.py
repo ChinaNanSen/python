@@ -75,8 +75,8 @@ data1 = data1.sort_values(by='ts')
 
 
 # 计算移动平均
-data1['mas'] = finta.TA.SMA(data1, 5)
-data1['mal'] = finta.TA.SMA(data1, 5)
+data1['mas'] = finta.TA.SMA(data1, 15)
+data1['mal'] = finta.TA.SMA(data1, 210)
 
 
 # 定义手续费和滑点
@@ -87,6 +87,7 @@ slippage = 0.0005
 initial_balance = 10000
 balance = initial_balance
 position = 0
+total_commission = 0  # 总手续费
 
 # 记录交易
 trades = []
@@ -105,6 +106,7 @@ for index, row in data1.iterrows():
         fee = amount * price * commission_rate
         balance -= amount * price + fee
         position += amount
+        total_commission += fee  # 累加手续费
         trades.append({'type': 'buy', 'price': price,
                       'amount': amount, 'fee': fee, 'timestamp': row['ts']})
 
@@ -126,4 +128,4 @@ trades_df.to_csv('trading_record.csv', index=False)
 
 # 打印结果
 print(
-    f"Initial Balance: {initial_balance}, Final Balance: {final_balance}, Performance: {performance}")
+    f"Initial Balance: {initial_balance}, Final Balance: {final_balance}, Performance: {performance}, Total Commission Paid: {total_commission}")
