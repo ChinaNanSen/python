@@ -20,7 +20,7 @@ def get_monthly_historical_data(instId, year, month, bar):
     start_ts = int(start_date.timestamp()) * 1000
     end_ts = int(end_date.timestamp()) * 1000
 
-    print(start_date,end_date)
+    print(start_date, end_date)
 
     all_data = []
     last_ts = end_ts
@@ -34,7 +34,7 @@ def get_monthly_historical_data(instId, year, month, bar):
             after=str(last_ts),
             limit="100"
         )
-        print(last_ts,start_ts)
+        print(last_ts, start_ts)
 
         if 'data' in result and len(result['data']) > 0:
             batch_data = result['data']
@@ -105,14 +105,16 @@ for index, row in data1.iterrows():
         fee = amount * price * commission_rate
         balance -= amount * price + fee
         position += amount
-        trades.append({'type': 'buy', 'price': price, 'amount': amount, 'fee': fee, 'timestamp': row['ts']})
+        trades.append({'type': 'buy', 'price': price,
+                      'amount': amount, 'fee': fee, 'timestamp': row['ts']})
 
     # 检查卖出信号
     elif row['mas'] < row['mal'] and position > 0:
         fee = position * price * commission_rate
         balance += position * price - fee
         position = 0
-        trades.append({'type': 'sell', 'price': price, 'amount': position, 'fee': fee, 'timestamp': row['ts']})
+        trades.append({'type': 'sell', 'price': price,
+                      'amount': position, 'fee': fee, 'timestamp': row['ts']})
 
 # 性能评估
 final_balance = balance + position * data1['close'].iloc[-1]
@@ -123,4 +125,5 @@ trades_df = pd.DataFrame(trades)
 trades_df.to_csv('trading_record.csv', index=False)
 
 # 打印结果
-print(f"Initial Balance: {initial_balance}, Final Balance: {final_balance}, Performance: {performance}")
+print(
+    f"Initial Balance: {initial_balance}, Final Balance: {final_balance}, Performance: {performance}")
