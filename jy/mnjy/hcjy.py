@@ -3,6 +3,7 @@ import configparser
 import pandas as pd
 import time
 from datetime import datetime
+import finta
 
 # 初始化API
 config = configparser.ConfigParser()
@@ -58,10 +59,68 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-datas = get_monthly_historical_data("BTC-USDT", 2023, 5, "15m")
-datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
-datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-datas.set_index('ts', inplace=True)
+# datas = get_monthly_historical_data("ETH-USDT", 2023, 5, "1m")
+# datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
+# datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+# datas.set_index('ts', inplace=True)
 csv_file_name = 'historical_data_2023_05.csv'
-datas.to_csv(csv_file_name)
+# datas.to_csv(csv_file_name)
 print("数据写入成功！！！")
+
+
+# 假设data1是您的历史数据DataFrame
+data1 = pd.read_csv(csv_file_name)
+data1 = data1.sort_values(by='ts')
+# data1.set_index('ts', inplace=True)
+
+
+# 计算移动平均
+data1['mas'] = finta.TA.SMA(data1, 5)
+data1['mal'] = finta.TA.SMA(data1, 5)
+
+
+# 定义手续费和滑点
+commission_rate = 0.001
+slippage = 0.0005
+
+# 初始化账户余额和持仓
+initial_balance = 10000
+balance = initial_balance
+position = 0
+
+# 记录交易
+trades = []
+
+# 回测逻辑
+for index, row in data1.iterrows():
+    # print(row['ts'])
+    if pd.isna(row['mas']) or pd.isna(row['mal']):  # 跳过还未生成MA的行
+        continue
+
+    price = row['close'] * (1 + slippage)  # 模拟实际成交价格（包括滑点）
+
+    # 检查买入信号
+    if row['mas'] > row['mal'] and balance > 0:
+        amount = balance / price
+        fee = amount * price * commission_rate
+        balance -= amount * price + fee
+        position += amount
+        trades.append({'type': 'buy', 'price': price, 'amount': amount, 'fee': fee, 'timestamp': row['ts']})
+
+    # 检查卖出信号
+    elif row['mas'] < row['mal'] and position > 0:
+        fee = position * price * commission_rate
+        balance += position * price - fee
+        position = 0
+        trades.append({'type': 'sell', 'price': price, 'amount': position, 'fee': fee, 'timestamp': row['ts']})
+
+# 性能评估
+final_balance = balance + position * data1['close'].iloc[-1]
+performance = final_balance - initial_balance
+
+# 将交易记录输出到文件
+trades_df = pd.DataFrame(trades)
+trades_df.to_csv('trading_record.csv', index=False)
+
+# 打印结果
+print(f"Initial Balance: {initial_balance}, Final Balance: {final_balance}, Performance: {performance}")
