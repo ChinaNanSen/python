@@ -16,7 +16,7 @@ def get_monthly_historical_data(instId, year, month, bar):
     # 计算月份的开始和结束时间戳
     start_date = datetime(year, month, 1)
     end_date = datetime(
-        year, month + 1, 1) if month < 12 else datetime(year + 1, 1, 1)
+        year, month + 2, 1) if month < 12 else datetime(year + 1, 1, 1)
     start_ts = int(start_date.timestamp()) * 1000
     end_ts = int(end_date.timestamp()) * 1000
 
@@ -27,6 +27,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
     while True:
         result = marketDataAPI.get_history_candlesticks(
+        # result = marketDataAPI.get_candlesticks(
             instId=instId,
             bar=bar,
             before=str(start_ts),
@@ -59,7 +60,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-# datas = get_monthly_historical_data("ETH-USDT", 2023, 5, "1m")
+# datas = get_monthly_historical_data("LTC-USDT", 2023, 9, "15m")
 # datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
 # datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
 # datas.set_index('ts', inplace=True)
@@ -75,16 +76,19 @@ data1 = data1.sort_values(by='ts')
 
 
 # 计算移动平均
-data1['mas'] = finta.TA.SMA(data1, 15)
-data1['mal'] = finta.TA.SMA(data1, 210)
+data1['mas'] = finta.TA.SMA(data1,  15)
+data1['mal'] = finta.TA.SMA(data1, 150)
+data1['emas'] = finta.TA.EMA(data1, 15)
+data1['emal'] = finta.TA.EMA(data1, 157)
 
 
 # 定义手续费和滑点
 commission_rate = 0.001
+# slippage = 0
 slippage = 0.0005
 
 # 初始化账户余额和持仓
-initial_balance = 10000
+initial_balance = 2000
 balance = initial_balance
 position = 0
 total_commission = 0  # 总手续费
@@ -95,13 +99,15 @@ trades = []
 # 回测逻辑
 for index, row in data1.iterrows():
     # print(row['ts'])
-    if pd.isna(row['mas']) or pd.isna(row['mal']):  # 跳过还未生成MA的行
+    if pd.isna(row['emas']) or pd.isna(row['emal']):  # 跳过还未生成MA的行
         continue
 
     price = row['close'] * (1 + slippage)  # 模拟实际成交价格（包括滑点）
 
     # 检查买入信号
-    if row['mas'] > row['mal'] and balance > 0:
+    # print(row)
+    # if row['mas'] > row['mal'] and balance > 0:
+    if row['emas'] > row['emal'] and balance > 0:
         amount = balance / price
         fee = amount * price * commission_rate
         balance -= amount * price + fee
@@ -111,7 +117,9 @@ for index, row in data1.iterrows():
                       'amount': amount, 'fee': fee, 'timestamp': row['ts']})
 
     # 检查卖出信号
-    elif row['mas'] < row['mal'] and position > 0:
+
+    # elif row['mas'] < row['mal'] and position > 0:
+    elif row['emas'] < row['emal'] and position > 0:
         fee = position * price * commission_rate
         balance += position * price - fee
         position = 0

@@ -1,60 +1,49 @@
-import okx.Account as Account
-import okx.Trade as Trade
-import okx.MarketData as MarketData
 import pandas as pd
-import datetime
-import matplotlib.pyplot as plt
-import configparser
 import finta
-import json
-import time
 
-class Config:
-    def __init__(self, file_path):
-        self.config = configparser.ConfigParser()
-        self.config.read(file_path)
-        self.apikey = self.config['OKX']['apikey']
-        self.secretkey = self.config['OKX']['secretkey']
-        self.passphrase = self.config['OKX']['passphrase']
-        self.flag = self.config['OKX']['flag']
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import matplotlib
 
-class AccountManager:
-    def __init__(self, apikey, secretkey, passphrase, flag):
-        self.accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
+# 设置 Matplotlib 使用中文字体
+matplotlib.rcParams['font.family'] = 'SimHei'  # 例如使用 "SimHei" 字体
+matplotlib.rcParams['axes.unicode_minus'] = False  # 正确显示负号
 
-    def get_balance(self, currency):
-        result = self.accountAPI.get_account_balance(ccy=currency)
-        return result["data"][0]
+# 读取交易记录和历史数据
+data1 = pd.read_csv('historical_data_2023_05.csv')
+trades_df = pd.read_csv('trading_record.csv')
 
-class TradeManager:
-    def __init__(self, apikey, secretkey, passphrase, flag, bz):
-        self.tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
-        self.bz = bz
 
-    # ... other methods for trading
 
-class MarketDataManager:
-    def __init__(self, flag, bz):
-        self.marketDataAPI = MarketData.MarketAPI(flag=flag)
-        self.bz = bz
+# # 准备买卖信号标记
+buy_signals = trades_df[trades_df['type'] == 'buy']
+sell_signals = trades_df[trades_df['type'] == 'sell']
+data1['emas'] = finta.TA.EMA(data1, 15)
+data1['emal'] = finta.TA.EMA(data1, 150)
 
-    def get_historical_data(self, limit="160"):
-        historical_data = self.marketDataAPI.get_candlesticks(instId=self.bz, limit=limit)
-        # ... processing the data
-        return data
 
-# ... other classes and functions for plotting and strategy
 
-def main():
-    config = Config('config.ini')
-    account_manager = AccountManager(config.apikey, config.secretkey, config.passphrase, config.flag)
-    trade_manager = TradeManager(config.apikey, config.secretkey, config.passphrase, config.flag, "ETH-USDT")
-    market_data_manager = MarketDataManager(config.flag, "ETH-USDT")
-    
-    while True:
-        historical_data = market_data_manager.get_historical_data()
-        # ... other logic
-        time.sleep(3)
 
-if __name__ == "__main__":
-    main()
+
+# 假设 data1, buy_signals, sell_signals 已经准备好
+data1['date'] = pd.to_datetime(data1['ts'])
+fig, ax = plt.subplots(figsize=(12, 6))
+
+
+# 绘制 K 线图
+ax.plot(data1['date'], data1['close'], label='收盘价')
+
+# print(buy_signals.columns)
+
+# 绘制买卖信号
+ax.scatter(buy_signals['timestamp'], buy_signals['price'], color='green', marker='^', label='买入信号')
+ax.scatter(sell_signals['timestamp'], sell_signals['price'], color='red', marker='v', label='卖出信号')
+
+# 设置 X 轴为日期格式
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+plt.xticks(rotation=45)
+
+# 显示图例
+ax.legend()
+
+plt.show()
