@@ -169,6 +169,10 @@ def jy():
 
             ma15 = finta.TA.SMA(data1, 15)
             ma150 = finta.TA.SMA(data1, 150)
+            bmacd = finta.TA.MACD(data1,10,30)
+
+            print(bmacd)
+            exit(1003)
 
             print("%s\n%s\n" %
                   (ma15.iloc[15], ma150.iloc[150]))

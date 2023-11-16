@@ -14,9 +14,9 @@ marketDataAPI = MarketData.MarketAPI(flag=flag)
 
 def get_monthly_historical_data(instId, year, month, bar):
     # 计算月份的开始和结束时间戳
-    start_date = datetime(year, month, 1)
+    start_date = datetime(year, month, 14)
     end_date = datetime(
-        year, month + 2, 1) if month < 12 else datetime(year + 1, 1, 1)
+        year, month + 2, 14) if month < 12 else datetime(year + 1, 1, 1)
     start_ts = int(start_date.timestamp()) * 1000
     end_ts = int(end_date.timestamp()) * 1000
 
@@ -78,8 +78,8 @@ data1 = data1.sort_values(by='ts')
 # 计算移动平均
 data1['mas'] = finta.TA.SMA(data1,  15)
 data1['mal'] = finta.TA.SMA(data1, 150)
-data1['emas'] = finta.TA.EMA(data1, 15)
-data1['emal'] = finta.TA.EMA(data1, 157)
+data1['emas'] = finta.TA.SMA(data1, 10)
+data1['emal'] = finta.TA.SMA(data1, 100)
 
 
 # 定义手续费和滑点
