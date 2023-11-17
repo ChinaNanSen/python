@@ -18,8 +18,8 @@ trades_df = pd.read_csv('trading_record.csv')
 # # 准备买卖信号标记
 buy_signals = trades_df[trades_df['type'] == 'buy']
 sell_signals = trades_df[trades_df['type'] == 'sell']
-data1['emas'] = finta.TA.EMA(data1, 15)
-data1['emal'] = finta.TA.EMA(data1, 150)
+# data1['emas'] = finta.TA.EMA(data1, 15)
+# data1['emal'] = finta.TA.EMA(data1, 150)
 
 
 

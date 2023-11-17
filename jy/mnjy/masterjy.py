@@ -155,7 +155,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                bar="15m",
+                # bar="15m",
                 limit="160"
             )
 
@@ -169,19 +169,26 @@ def jy():
 
             ma15 = finta.TA.SMA(data1, 15)
             ma150 = finta.TA.SMA(data1, 150)
-            bmacd = finta.TA.MACD(data1,10,30)
+            bmacd = finta.TA.MACD(data1)
+            bbands = finta.TA.BBANDS(data1)
+            bu = bbands.iloc[-1]['BB_UPPER']
+            bm = bbands.iloc[-1]['BB_MIDDLE']
+            bl = bbands.iloc[-1]['BB_LOWER']
 
-            print(bmacd)
-            exit(1003)
+            # print(bmacd)
+            # exit(1003)
 
             print("%s\n%s\n" %
                   (ma15.iloc[15], ma150.iloc[150]))
-
+            cn = data1['close'].iloc[0]
+            # print(type(cn))
+            # print(type(bl))
+            # exit(1024)
             # 检查交叉点并执行交易逻辑
             buy_signals = {}
             sell_signals = {}
 
-            if ma15.iloc[15] > ma150.iloc[150] and position_opened:
+            if float(cn) < bl and position_opened:
 
                 # byex=getOrder("buy"+str(n))['data'][0]['fillSz']
                 # print(byex)
@@ -239,7 +246,7 @@ def jy():
                 else:
                     print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
-            elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
+            elif float(cn) > bu and position_opened == False:
                 print(order_id)
                 # 卖出信号
                 # ye = account(dbz)
@@ -298,7 +305,7 @@ def jy():
             break
         except Exception as e:
             print(f"Error: {e}")
-            if attempt < 2:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
+            if attempt < 5:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
                 time.sleep(2)
             else:
                 print("Failed to execute trading logic after 3 attempts.")
@@ -306,6 +313,7 @@ def jy():
 
 if __name__ == "__main__":
     dd = []
+
     position_opened = True
     while True:
 
@@ -314,3 +322,7 @@ if __name__ == "__main__":
         print(position_opened)
 
         print(dd)
+    # 将交易记录输出到文件
+    trades_df = pd.DataFrame(dd)
+    trades_df.to_csv('bb_trading_record.csv', index=False)
+
