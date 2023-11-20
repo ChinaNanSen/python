@@ -10,6 +10,7 @@ import finta
 import configparser
 import random
 
+
 # API 初始化
 # 从配置文件读取API初始化信息
 config = configparser.ConfigParser()
@@ -321,8 +322,8 @@ if __name__ == "__main__":
         jy()
         print(position_opened)
 
-        print(dd)
+        # print(dd)
     # 将交易记录输出到文件
-    trades_df = pd.DataFrame(dd)
-    trades_df.to_csv('bb_trading_record.csv', index=False)
+    # trades_df = pd.DataFrame(dd)
+    # trades_df.to_csv('bb_trading_record.csv', index=False)
 
