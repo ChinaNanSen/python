@@ -325,4 +325,3 @@ if __name__ == "__main__":
     # 将交易记录输出到文件
     trades_df = pd.DataFrame(dd)
     trades_df.to_csv('bb_trading_record.csv', index=False)
-

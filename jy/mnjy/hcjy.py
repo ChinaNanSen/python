@@ -27,7 +27,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
     while True:
         result = marketDataAPI.get_history_candlesticks(
-        # result = marketDataAPI.get_candlesticks(
+            # result = marketDataAPI.get_candlesticks(
             instId=instId,
             bar=bar,
             before=str(start_ts),
@@ -95,9 +95,6 @@ data1['bl'] = bbands.iloc[-1]['BB_LOWER']
 # stop_loss = data1['close'] - atr * multiplier
 
 
-
-
-
 # 定义手续费和滑点
 commission_rate = 0.001
 # slippage = 0
@@ -122,7 +119,6 @@ for index, row in data1.iterrows():
 
     # 检查买入信号
     # print(row)
-    
 
     # if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:

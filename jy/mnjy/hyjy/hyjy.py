@@ -150,7 +150,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                bar="15m",
+                # bar="15m",
                 limit="160"
             )
 
@@ -173,7 +173,7 @@ def jy():
 
             # print("%s\n%s\n" %
             #       (ma15.iloc[15], ma150.iloc[150]))
-            print("%s\n%s\n" %(cn, bl))
+            print("%s\n%s\n" % (cn, bl))
 
             # 检查交叉点并执行交易逻辑
             buy_signals = {}
@@ -187,7 +187,7 @@ def jy():
                 ye = account("USDT")
 
                 ccb = ye["details"][0]["availBal"]
-                cb = float(ccb) / 2  
+                cb = float(ccb) / 2
                 # print(ye)
                 print(position_opened)
                 # exit(1023)
@@ -195,13 +195,13 @@ def jy():
 
                 # exit(1036)
                 if float(cb) >= 100:
-                    
+
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cross",  # 保证金模式：isolated：逐仓 ；cross：全仓
                         # ccy=dbz,
                         # posSide="short",  # 选择 long 或 short
-                        # side="sell", 
+                        # side="sell",
                         posSide="long",  # 选择 long 或 short
                         side="buy",
                         clOrdId="buy"+str(order_id),
@@ -231,6 +231,7 @@ def jy():
                     oidict['bcj'] = bcj
                     oidict['bsx'] = bsx
                     dd.append(oidict)
+                    print(dd)
 
                     buy_signals[data1.index[15]] = data1['close'].iloc[15]
                     print("\033[32m++++hit++buy\033[0m")
@@ -258,7 +259,7 @@ def jy():
                         mgnMode="cross"
                     )
                     print(uresult)
-                    
+
                     position_opened = True
                     uoid = uresult['data'][0]['ordId']
                     print(uoid)
