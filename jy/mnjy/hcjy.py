@@ -60,7 +60,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-# datas = get_monthly_historical_data("LTC-USDT", 2023, 10, "1m")
+# datas = get_monthly_historical_data("BTC-USDT", 2023, 10, "1m")
 # datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
 # datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
 # datas.set_index('ts', inplace=True)
@@ -71,33 +71,49 @@ print("数据写入成功！！！")
 
 # 假设data1是您的历史数据DataFrame
 data1 = pd.read_csv(csv_file_name)
-data1 = data1.sort_values(by='ts')
 # print(data1)
-# data1.set_index('ts', inplace=True)
+# data1['mas'] = finta.TA.EMA(data1,15)
+# print(data1['mas'])
+# print(data1['ts'].iloc[0],"   ",data1['mas'].iloc[0])
+# bbands = finta.TA.BBANDS(data1)
+# # print(bbands)
+# print(data1['ts'].iloc[19],"   ",bbands['BB_UPPER'].iloc[19])
+
+# data1 = data1.sort_values(by='ts')
+# print(data1)
+data1.set_index('ts', inplace=True)
 
 # 计算移动平均
-data1['mas'] = finta.TA.SMA(data1,15)
+# data1['mas'] = finta.TA.EMA(data1,15)
 # print(data1['mas'])
+# print(data1['ts'].iloc[-1],"   ",data1['mas'].iloc[-1])
 # print(data1['mas'].iloc[13] )
-# print(data1)
-data1['mal'] = finta.TA.SMA(data1, 150)
-data1['emas'] = finta.TA.SMA(data1, 10)
-data1['emal'] = finta.TA.SMA(data1, 100)
+print(data1)
+mal = finta.TA.SMA(data1, 150)
+mas = finta.TA.SMA(data1, 15)
+
+data1['mal'] = mal.iloc[-1]
+data1['mas'] = mas.iloc[-1]
+sar = finta.TA.SAR(data1)
+print(sar.iloc[0])
+exit(112)
+data1['emal'] = finta.TA.EMA(data1, 150)
+data1['emas'] = finta.TA.EMA(data1, 15)
 data1['rsi'] = finta.TA.RSI(data1)
 macd = finta.TA.MACD(data1)
 data1['macd'] = macd.iloc[-1]['MACD']
 data1['sig'] = macd.iloc[-1]['SIGNAL']
 # bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
-data1['bu'] = bbands.iloc[19]['BB_UPPER']
-data1['bm'] = bbands.iloc[19]['BB_MIDDLE']
-data1['bl'] = bbands.iloc[19]['BB_LOWER']
+data1['bu'] = bbands.iloc[-1]['BB_UPPER']
+data1['bm'] = bbands.iloc[-1]['BB_MIDDLE']
+data1['bl'] = bbands.iloc[-1]['BB_LOWER']
 data1['close'].iloc[0]
 data1['high'].iloc[0]
 data1['low'].iloc[0]
 # print(bbands )
 
-# print(bbands['BB_UPPER'].iloc[19])
+# print(data1['ts'].iloc[-1],"   ",bbands['BB_UPPER'].iloc[-1])
 # print(bbands['BB_LOWER'])
 # exit(1)
 # print(data1['bl'])
@@ -139,9 +155,9 @@ for index, row in data1.iterrows():
     # exit(1)
     
 
-    # if row['mas'] > row['mal'] and balance > 0:
+    if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
-    if row['close'] < row['bl'] and balance > 0:
+    # if row['close'] < row['bl'] and balance > 0:
     # if row['low'] < row['bl'] and balance > 0:
         # amount = balance / lprice
         amount = balance / price
@@ -157,9 +173,9 @@ for index, row in data1.iterrows():
 
     # 检查卖出信号
 
-    # elif row['mas'] < row['mal'] and position > 0:
+    elif row['mas'] < row['mal'] and position > 0:
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
-    elif row['close'] > row['bu'] and position > 0:
+    # elif row['close'] > row['bu'] and position > 0:
     # elif row['high'] > row['bu'] and position > 0:
         # fee = position * hprice * commission_rate
         fee = position * price * commission_rate
