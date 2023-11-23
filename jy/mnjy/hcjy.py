@@ -14,9 +14,9 @@ marketDataAPI = MarketData.MarketAPI(flag=flag)
 
 def get_monthly_historical_data(instId, year, month, bar):
     # 计算月份的开始和结束时间戳
-    start_date = datetime(year, month, 5)
+    start_date = datetime(year, month, 1)
     end_date = datetime(
-        year, month + 1, 5) if month < 12 else datetime(year + 1, 1, 1)
+        year, month + 1, 10) if month < 12 else datetime(year + 1, 1, 1)
     start_ts = int(start_date.timestamp()) * 1000
     end_ts = int(end_date.timestamp()) * 1000
 
@@ -60,7 +60,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-# datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "1m")
+# datas = get_monthly_historical_data("LTC-USDT", 2023, 10, "1m")
 # datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
 # datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
 # datas.set_index('ts', inplace=True)
@@ -72,11 +72,14 @@ print("数据写入成功！！！")
 # 假设data1是您的历史数据DataFrame
 data1 = pd.read_csv(csv_file_name)
 data1 = data1.sort_values(by='ts')
+# print(data1)
 # data1.set_index('ts', inplace=True)
 
-
 # 计算移动平均
-data1['mas'] = finta.TA.SMA(data1,  15)
+data1['mas'] = finta.TA.SMA(data1,15)
+# print(data1['mas'])
+# print(data1['mas'].iloc[13] )
+# print(data1)
 data1['mal'] = finta.TA.SMA(data1, 150)
 data1['emas'] = finta.TA.SMA(data1, 10)
 data1['emal'] = finta.TA.SMA(data1, 100)
@@ -84,11 +87,21 @@ data1['rsi'] = finta.TA.RSI(data1)
 macd = finta.TA.MACD(data1)
 data1['macd'] = macd.iloc[-1]['MACD']
 data1['sig'] = macd.iloc[-1]['SIGNAL']
+# bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
-data1['bu'] = bbands.iloc[-1]['BB_UPPER']
-data1['bm'] = bbands.iloc[-1]['BB_MIDDLE']
-data1['bl'] = bbands.iloc[-1]['BB_LOWER']
+data1['bu'] = bbands.iloc[19]['BB_UPPER']
+data1['bm'] = bbands.iloc[19]['BB_MIDDLE']
+data1['bl'] = bbands.iloc[19]['BB_LOWER']
+data1['close'].iloc[0]
+data1['high'].iloc[0]
+data1['low'].iloc[0]
 # print(bbands )
+
+# print(bbands['BB_UPPER'].iloc[19])
+# print(bbands['BB_LOWER'])
+# exit(1)
+# print(data1['bl'])
+# print(data1['mas'])
 
 # exit(103)
 # atr = finta.TA.ATR(data1)
@@ -101,7 +114,7 @@ commission_rate = 0.001
 slippage = 0.0005
 
 # 初始化账户余额和持仓
-initial_balance = 5000
+initial_balance = 2000
 balance = initial_balance
 position = 0
 total_commission = 0  # 总手续费
@@ -112,22 +125,33 @@ trades = []
 # 回测逻辑
 for index, row in data1.iterrows():
     # print(row['ts'])
-    if pd.isna(row['emas']) or pd.isna(row['emal']):  # 跳过还未生成MA的行
+    if pd.isna(row['emas']) or pd.isna(row['emal']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
         continue
 
+   
+    lprice = row['low'] * (1 + slippage)  # 模拟实际成交价格（包括滑点）
+    hprice = row['high'] * (1 + slippage)  # 模拟实际成交价格（包括滑点）
     price = row['close'] * (1 + slippage)  # 模拟实际成交价格（包括滑点）
 
     # 检查买入信号
+    
     # print(row)
+    # exit(1)
+    
 
     # if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
     if row['close'] < row['bl'] and balance > 0:
+    # if row['low'] < row['bl'] and balance > 0:
+        # amount = balance / lprice
         amount = balance / price
+        # fee = amount * lprice * commission_rate
         fee = amount * price * commission_rate
+        # balance -= amount * lprice + fee
         balance -= amount * price + fee
         position += amount
         total_commission += fee  # 累加手续费
+        # trades.append({'type': 'buy', 'price': lprice,
         trades.append({'type': 'buy', 'price': price,
                       'amount': amount, 'fee': fee, 'timestamp': row['ts']})
 
@@ -136,13 +160,18 @@ for index, row in data1.iterrows():
     # elif row['mas'] < row['mal'] and position > 0:
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
     elif row['close'] > row['bu'] and position > 0:
+    # elif row['high'] > row['bu'] and position > 0:
+        # fee = position * hprice * commission_rate
         fee = position * price * commission_rate
+        # balance += position * hprice - fee
         balance += position * price - fee
         position = 0
+        # trades.append({'type': 'sell', 'price': hprice,
         trades.append({'type': 'sell', 'price': price,
                       'amount': position, 'fee': fee, 'timestamp': row['ts']})
 
 # 性能评估
+# final_balance = balance + position * data1['high'].iloc[-1]
 final_balance = balance + position * data1['close'].iloc[-1]
 performance = final_balance - initial_balance
 

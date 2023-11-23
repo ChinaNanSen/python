@@ -170,6 +170,8 @@ def jy():
             bm = bbands.iloc[-1]['BB_MIDDLE']
             bl = bbands.iloc[-1]['BB_LOWER']
             cn = data1['close'].iloc[0]
+            hn = data1['high'].iloc[0]
+            ln = data1['low'].iloc[0]
 
             # print("%s\n%s\n" %
             #       (ma15.iloc[15], ma150.iloc[150]))
@@ -181,6 +183,7 @@ def jy():
 
             # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
             if float(cn) < bl and position_opened:
+            # if float(ln) < bl and position_opened:
 
                 order_id = generate_order_id()
                 # 买入信号
