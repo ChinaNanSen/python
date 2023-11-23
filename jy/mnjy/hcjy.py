@@ -16,7 +16,7 @@ def get_monthly_historical_data(instId, year, month, bar):
     # 计算月份的开始和结束时间戳
     start_date = datetime(year, month, 1)
     end_date = datetime(
-        year, month + 1, 10) if month < 12 else datetime(year + 1, 1, 1)
+        year, month + 1, 22) if month < 12 else datetime(year + 1, 1, 1)
     start_ts = int(start_date.timestamp()) * 1000
     end_ts = int(end_date.timestamp()) * 1000
 
@@ -60,10 +60,10 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-# datas = get_monthly_historical_data("BTC-USDT", 2023, 10, "1m")
-# datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
-# datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-# datas.set_index('ts', inplace=True)
+datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "1m")
+datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
+datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+datas.set_index('ts', inplace=True)
 csv_file_name = 'historical_data_2023_05.csv'
 # datas.to_csv(csv_file_name)
 print("数据写入成功！！！")
@@ -71,6 +71,8 @@ print("数据写入成功！！！")
 
 # 假设data1是您的历史数据DataFrame
 data1 = pd.read_csv(csv_file_name)
+data1 = data1.iloc[::-1]
+
 # print(data1)
 # data1['mas'] = finta.TA.EMA(data1,15)
 # print(data1['mas'])
@@ -88,15 +90,15 @@ data1.set_index('ts', inplace=True)
 # print(data1['mas'])
 # print(data1['ts'].iloc[-1],"   ",data1['mas'].iloc[-1])
 # print(data1['mas'].iloc[13] )
-print(data1)
+# print(data1)
 mal = finta.TA.SMA(data1, 150)
 mas = finta.TA.SMA(data1, 15)
 
 data1['mal'] = mal.iloc[-1]
 data1['mas'] = mas.iloc[-1]
 sar = finta.TA.SAR(data1)
-print(sar.iloc[0])
-exit(112)
+# print(sar.iloc[0])
+# exit(112)
 data1['emal'] = finta.TA.EMA(data1, 150)
 data1['emas'] = finta.TA.EMA(data1, 15)
 data1['rsi'] = finta.TA.RSI(data1)
@@ -111,11 +113,11 @@ data1['bl'] = bbands.iloc[-1]['BB_LOWER']
 data1['close'].iloc[0]
 data1['high'].iloc[0]
 data1['low'].iloc[0]
-# print(bbands )
+print(bbands )
 
 # print(data1['ts'].iloc[-1],"   ",bbands['BB_UPPER'].iloc[-1])
 # print(bbands['BB_LOWER'])
-# exit(1)
+exit(1)
 # print(data1['bl'])
 # print(data1['mas'])
 
@@ -155,9 +157,9 @@ for index, row in data1.iterrows():
     # exit(1)
     
 
-    if row['mas'] > row['mal'] and balance > 0:
+    # if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
-    # if row['close'] < row['bl'] and balance > 0:
+    if row['close'] < row['bl'] and balance > 0:
     # if row['low'] < row['bl'] and balance > 0:
         # amount = balance / lprice
         amount = balance / price
@@ -169,13 +171,13 @@ for index, row in data1.iterrows():
         total_commission += fee  # 累加手续费
         # trades.append({'type': 'buy', 'price': lprice,
         trades.append({'type': 'buy', 'price': price,
-                      'amount': amount, 'fee': fee, 'timestamp': row['ts']})
+                      'amount': amount, 'fee': fee, 'timestamp': row.name})
 
     # 检查卖出信号
 
-    elif row['mas'] < row['mal'] and position > 0:
+    # elif row['mas'] < row['mal'] and position > 0:
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
-    # elif row['close'] > row['bu'] and position > 0:
+    elif row['close'] > row['bu'] and position > 0:
     # elif row['high'] > row['bu'] and position > 0:
         # fee = position * hprice * commission_rate
         fee = position * price * commission_rate
@@ -184,7 +186,7 @@ for index, row in data1.iterrows():
         position = 0
         # trades.append({'type': 'sell', 'price': hprice,
         trades.append({'type': 'sell', 'price': price,
-                      'amount': position, 'fee': fee, 'timestamp': row['ts']})
+                      'amount': position, 'fee': fee, 'timestamp': row.name})
 
 # 性能评估
 # final_balance = balance + position * data1['high'].iloc[-1]
