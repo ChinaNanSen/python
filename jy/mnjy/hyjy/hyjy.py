@@ -175,7 +175,10 @@ def jy():
 
             # print("%s\n%s\n" %
             #       (ma15.iloc[15], ma150.iloc[150]))
-            print("%s\n%s\n" %(cn, bl))
+            print("cn:%s\nbl:%s\n" %(cn, bl))
+            print("-------------")
+            print("cn:%s\nbu:%s\n" %(cn, bu))
+
 
             # 检查交叉点并执行交易逻辑
             buy_signals = {}
@@ -187,6 +190,7 @@ def jy():
 
                 order_id = generate_order_id()
                 # 买入信号
+                
                 ye = account("USDT")
 
                 ccb = ye["details"][0]["availBal"]
