@@ -60,12 +60,12 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-# datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "1m")
-# datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
-# datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-# datas.set_index('ts', inplace=True)
+datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "4H")
+datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
+datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+datas.set_index('ts', inplace=True)
 csv_file_name = 'historical_data_2023_05.csv'
-# datas.to_csv(csv_file_name)
+datas.to_csv(csv_file_name)
 print("数据写入成功！！！")
 
 
