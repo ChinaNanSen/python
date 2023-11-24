@@ -156,7 +156,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                # bar="15m",
+                bar="30m",
                 limit="160"
             )
 
@@ -197,6 +197,7 @@ def jy():
             # if float(ln) < bl and position_opened:
 
                 order_id = generate_order_id()
+                print("\033[32m开始买入\033[0m")
                 print("-----")
                 
                 # 买入信号
@@ -257,6 +258,7 @@ def jy():
 
             # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
             if float(hn) > bu and position_opened :
+                print("\033[31m开始卖出\033[0m")
                 print("++++++++++")
                 print(order_id)
                 # 卖出信号
@@ -307,7 +309,8 @@ def jy():
             if position_opened:
                 print(position_opened)
                 pos_data = positions()['data'][0]
-                if float(pos_data['upl']) <= -11:
+                if float(pos_data['upl']) <= -10:
+                    print("\033[31m亏损超过11U,平仓\033[0m")
                     print(order_id)
                     print("==========")
                     # 卖出信号
@@ -371,6 +374,6 @@ if __name__ == "__main__":
     dd = []
     position_opened = False
     while True:
-        time.sleep(3)
+        time.sleep(1)
         jy()
         print(position_opened)
