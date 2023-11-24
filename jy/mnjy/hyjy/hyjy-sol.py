@@ -73,11 +73,12 @@ def trading_logic(data_frame, position_opened):
     bl = bbands.iloc[-1]['BB_LOWER']
     cn = data_frame['close'].iloc[0]
     hn = data_frame['high'].iloc[0]
-    print("\033[32mcn:%s\nbl:%s\n\033[0m" %(cn, bl))
+    ln = data_frame['low'].iloc[0]
+    print("\033[32mcn:%s\nbl:%s\n\033[0m" %(ln, bl))
     print("-------------")
-    print("\033[31mcn:%s\nbu:%s\n\033[0m" %(cn, bu))
+    print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
 
-    if float(cn) < bl and  position_opened == False:
+    if float(ln) < bl and  position_opened == False:
         print("\033[32m开始买入\033[0m")
         return "buy"
     elif float(hn) > bu and position_opened:
