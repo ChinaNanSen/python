@@ -78,10 +78,13 @@ def trading_logic(data_frame, position_opened):
     print("\033[31mcn:%s\nbu:%s\n\033[0m" %(cn, bu))
 
     if float(cn) < bl and  position_opened == False:
+        print("\033[32m开始买入\033[0m")
         return "buy"
     elif float(hn) > bu and position_opened:
+        print("\033[31m开始卖出\033[0m")
         return "sell"
     elif position_opened:
+        print("\033[31m亏损超过11U,平仓\033[0m")
         pos_data = positions()['data'][0]
         if float(pos_data['upl']) <= -11:
             return "sell"
@@ -92,6 +95,7 @@ def execute_trade(trade_type, order_id):
     # 执行交易
     if trade_type == "buy":
         # 买入逻辑
+        
         order_id = generate_order_id()
         print("-----")
         # 买入信号
@@ -141,6 +145,7 @@ def execute_trade(trade_type, order_id):
         pass
     elif trade_type == "sell":
         # 卖出逻辑
+        
         print("++++++++++")
         print(order_id)
         # 卖出信号
