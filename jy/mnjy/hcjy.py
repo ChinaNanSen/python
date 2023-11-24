@@ -60,10 +60,10 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "1m")
-datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
-datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-datas.set_index('ts', inplace=True)
+# datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "1m")
+# datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
+# datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+# datas.set_index('ts', inplace=True)
 csv_file_name = 'historical_data_2023_05.csv'
 # datas.to_csv(csv_file_name)
 print("数据写入成功！！！")
@@ -113,11 +113,11 @@ data1['bl'] = bbands.iloc[-1]['BB_LOWER']
 data1['close'].iloc[0]
 data1['high'].iloc[0]
 data1['low'].iloc[0]
-print(bbands )
+# print(bbands )
 
 # print(data1['ts'].iloc[-1],"   ",bbands['BB_UPPER'].iloc[-1])
 # print(bbands['BB_LOWER'])
-exit(1)
+# exit(1)
 # print(data1['bl'])
 # print(data1['mas'])
 

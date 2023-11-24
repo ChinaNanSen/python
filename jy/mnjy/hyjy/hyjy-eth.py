@@ -54,6 +54,12 @@ def tradedata():
     )
     return result
 
+def positions():
+    result = accountAPI.get_positions(
+        instType="SWAP",
+        instId=bz
+    )
+    return result
 
 def account(cb):
     for attempt in range(3):  # 尝试次数
@@ -140,7 +146,9 @@ def jy():
     # 跟踪全局变量状态
     global position_opened
     global order_id  # 使用global关键字声明order_id是全局变量
-
+    
+    
+    
     # print(getOrder('641999281087422464'))
     # exit(1006)
 
@@ -178,17 +186,18 @@ def jy():
             print("ln:%s\nbl:%s\n" %(ln, bl))
             print("---------------")
             print("hn:%s\nbu:%s\n" %(ln, bu))
-            
+
             # 检查交叉点并执行交易逻辑
             buy_signals = {}
             sell_signals = {}
-
+        
             # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
             # if float(cn) < bl and position_opened:
-            if float(ln) < bl and position_opened:
+            if float(ln) < bl and  position_opened == False:
 
                 order_id = generate_order_id()
                 # 买入信号
+                print("-----------------")
                 ye = account("USDT")
 
                 ccb = ye["details"][0]["availBal"]
@@ -216,9 +225,10 @@ def jy():
                     )
                     print(result)
                     # 更新持仓状态
-                    position_opened = False
+                    position_opened = True
                     # 订单ID
                     oid = result['data'][0]['clOrdId']
+                    cid = result['data'][0]['ordId']
                     # print(">>>>>>>>",oid)
                     oidict = {}
                     # 订单币币余额
@@ -236,6 +246,7 @@ def jy():
                     oidict['bcj'] = bcj
                     oidict['bsx'] = bsx
                     dd.append(oidict)
+                    
 
                     buy_signals[data1.index[15]] = data1['close'].iloc[15]
                     print("\033[32m++++hit++buy\033[0m")
@@ -244,8 +255,8 @@ def jy():
 
             # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
             # elif float(cn) > bu and position_opened == False:
-            elif float(hn) > bu and position_opened == False:
-
+            if float(hn) > bu and position_opened :
+                print("+++++++++++++")
                 print(order_id)
                 # 卖出信号
                 try:
@@ -265,7 +276,7 @@ def jy():
                     )
                     print(uresult)
                     
-                    position_opened = True
+                    position_opened = False
                     uoid = uresult['data'][0]['ordId']
                     print(uoid)
                     # 订单币币余额
@@ -291,6 +302,57 @@ def jy():
             else:
                 print("\033[33m###########miss\033[0m")
 
+            
+            if position_opened:
+                print(position_opened)
+                pos_data = positions()['data'][0]
+                if float(pos_data['upl']) <= -11:
+                    print(order_id)
+                    print("===========")
+                    # 卖出信号
+                    try:
+                        byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
+                    except Exception as es:
+                        print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
+                        break
+
+                    if float(byex) != 0:
+
+                        uresult = tradeAPI.close_positions(
+                            instId=bz,
+                            # ccy='BTC',
+                            clOrdId="sell"+str(order_id),
+                            posSide="long",
+                            mgnMode="cross"
+                        )
+                        print(uresult)
+                        
+                        position_opened = False
+                       
+                        uoid = uresult['data'][0]['ordId']
+                        print(uoid)
+                        # 订单币币余额
+                        uye = getOrder(uoid)['data'][0]['fillSz']
+                        # 订单币币收入
+                        uxf = getOrder(uoid)['data'][0]['sz']
+                        # 成交价
+                        ucj = getOrder(uoid)['data'][0]['fillPx']
+                        # 订单手续费
+                        usx = getOrder(uoid)['data'][0]['fee']
+                        oidict['uoid'] = "sell"+str(order_id)
+                        oidict['ubye'] = uye
+                        oidict['ubxf'] = uxf
+                        oidict['ubcj'] = ucj
+                        oidict['ubsx'] = usx
+                        dd.append(oidict)
+                    
+
+                        sell_signals[data1.index[15]] = data1['close'].iloc[15]
+                        print("\033[32m---hit-----sell\033[0m")
+
+                    else:
+                        print("\033[31msell操作忽略,BTC余额不足\033[0m")
+                        
             # 画图功能
             # plot_data(data1, ma15, ma150, buy_signals, sell_signals)
 
@@ -306,7 +368,7 @@ def jy():
 
 if __name__ == "__main__":
     dd = []
-    position_opened = True
+    position_opened = False
     while True:
         time.sleep(3)
         jy()
