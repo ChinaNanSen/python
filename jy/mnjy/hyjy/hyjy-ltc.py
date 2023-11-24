@@ -280,7 +280,7 @@ def jy():
                     print(uresult)
                     
                     position_opened = False
-                    uoid = uresult['data'][0]['ordId']
+                    uoid = uresult['data'][0]['clOrdId']
                     print(uoid)
                     # 订单币币余额
                     uye = getOrder(uoid)['data'][0]['fillSz']
