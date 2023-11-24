@@ -65,6 +65,7 @@ def process_data(data_frame):
     return data_frame
 
 def trading_logic(data_frame, position_opened):
+    
     # 交易逻辑
     ma15 = finta.TA.SMA(data_frame, 15)
     ma150 = finta.TA.SMA(data_frame, 150)
@@ -78,10 +79,11 @@ def trading_logic(data_frame, position_opened):
     print("-------------")
     print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
 
-    if float(ln) < bl and  position_opened == False:
+    if float(ln) > bl and  position_opened == False:
+        print(position_opened)
         print("\033[32m开始买入\033[0m")
         return "buy"
-    elif float(hn) > bu and position_opened:
+    elif float(hn) < bu and position_opened:
         print("\033[31m开始卖出\033[0m")
         return "sell"
     elif position_opened:
@@ -103,7 +105,7 @@ def execute_trade(trade_type, order_id):
         ye = account_balance("USDT")
         ccb = ye["details"][0]["availBal"]
         cb = float(ccb) / 2
-        print(position_opened)
+        
         # exit(1036)
         if float(cb) >= 100:
             result = tradeAPI.place_order(
@@ -117,7 +119,7 @@ def execute_trade(trade_type, order_id):
                 clOrdId="buy"+str(order_id),
                 ordType="market",  # market 市价单 ，limit 限价单
                 # px="34430",
-                sz="300"  # 买入100 USDT的BTC
+                sz="30"  # 买入100 USDT的BTC
             )
             print(result)
             # 更新持仓状态
@@ -186,6 +188,7 @@ def execute_trade(trade_type, order_id):
         print("\033[33m###########miss\033[0m")
 
 def main():
+    global position_opened
     position_opened = False
     print("\033[34m~~~~~starting jy %s\033[0m" % dbz)
     while True:
