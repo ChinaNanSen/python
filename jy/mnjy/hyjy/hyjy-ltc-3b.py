@@ -24,8 +24,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "BTC-USDT-SWAP"
-dbz = "BTC"
+bz = "LTC-USDT-SWAP"
+dbz = "LTC"
 
 
 # 设置字体
@@ -60,6 +60,9 @@ def positions():
         instId=bz
     )
     return result
+
+
+
 
 def account(cb):
     for attempt in range(3):  # 尝试次数
@@ -114,7 +117,7 @@ confirm	String	K线状态
 
 print("\033[34m~~~~~starting jy %s\033[0m" % dbz)
 
-'''
+
 def plot_data(data, ma15, ma150, buy_signals, sell_signals):
     plt.figure(figsize=(12, 6))
 
@@ -139,7 +142,7 @@ def plot_data(data, ma15, ma150, buy_signals, sell_signals):
     plt.ylabel('价格')
     plt.grid()
     plt.show()
-'''
+
 
 def jy():
 
@@ -156,7 +159,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                bar="30m",
+                # bar="15m",
                 limit="160"
             )
 
@@ -171,41 +174,39 @@ def jy():
             ma15 = finta.TA.SMA(data1, 15)
             ma150 = finta.TA.SMA(data1, 150)
             bmacd = finta.TA.MACD(data1)
-            bbands = finta.TA.BBANDS(data1)
-            bu = bbands.iloc[19]['BB_UPPER']
-            bm = bbands.iloc[19]['BB_MIDDLE']
-            bl = bbands.iloc[19]['BB_LOWER']
+            bbands = finta.TA.BBANDS(data1,30,3)
+            bu = bbands.iloc[29]['BB_UPPER']
+            bm = bbands.iloc[29]['BB_MIDDLE']
+            bl = bbands.iloc[29]['BB_LOWER']
             cn = data1['close'].iloc[0]
             hn = data1['high'].iloc[0]
             ln = data1['low'].iloc[0]
-
+            # print(bbands)
+            # print(bl)
+            # exit(11)
             # print("%s\n%s\n" %
             #       (ma15.iloc[15], ma150.iloc[150]))
-            print("cn:%s\nbl:%s\n" %(cn, bl))
-            print("-------------")
-            print("cn:%s\nbu:%s\n" %(cn, bu))
+            print("ln:%s\n3bl:%s\n" %(ln, bl))
+            print("---------------")
+            print("hn:%s\n3bu:%s\n" %(ln, bu))
 
 
             # 检查交叉点并执行交易逻辑
             buy_signals = {}
             sell_signals = {}
-            
         
-
             # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
+            # if float(cn) < bl and position_opened:
             if float(ln) < bl and position_opened == False:
-            # if float(ln) < bl and position_opened:
 
                 order_id = generate_order_id()
                 print("\033[32m开始买入\033[0m")
-                print("-----")
-                
+                print("-------------")
                 # 买入信号
-                
                 ye = account("USDT")
 
                 ccb = ye["details"][0]["availBal"]
-                cb = float(ccb) / 2
+                cb = float(ccb) / 2  
                 # print(ye)
                 print(position_opened)
                 # exit(1023)
@@ -213,19 +214,19 @@ def jy():
 
                 # exit(1036)
                 if float(cb) >= 100:
-
+                    
                     result = tradeAPI.place_order(
                         instId=bz,
                         tdMode="cross",  # 保证金模式：isolated：逐仓 ；cross：全仓
                         # ccy=dbz,
                         # posSide="short",  # 选择 long 或 short
-                        # side="sell",
+                        # side="sell", 
                         posSide="long",  # 选择 long 或 short
                         side="buy",
                         clOrdId="buy"+str(order_id),
                         ordType="market",  # market 市价单 ，limit 限价单
                         # px="34430",
-                        sz="300"  # 买入100 USDT的BTC
+                        sz="60000"  # 买入100 USDT的BTC
                     )
                     print(result)
                     # 更新持仓状态
@@ -249,7 +250,6 @@ def jy():
                     oidict['bcj'] = bcj
                     oidict['bsx'] = bsx
                     dd.append(oidict)
-                    print(dd)
 
                     buy_signals[data1.index[15]] = data1['close'].iloc[15]
                     print("\033[32m++++hit++buy\033[0m")
@@ -257,9 +257,11 @@ def jy():
                     print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
             # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
-            if float(hn) > bu and position_opened :
+            # elif float(cn) > bu and position_opened == False:
+            if float(hn) > bu and position_opened:
                 print("\033[31m开始卖出\033[0m")
-                print("++++++++++")
+                print("+++++++++++")
+
                 print(order_id)
                 # 卖出信号
                 try:
@@ -278,9 +280,9 @@ def jy():
                         mgnMode="cross"
                     )
                     print(uresult)
-
+                    
                     position_opened = False
-                    uoid = uresult['data'][0]['ordId']
+                    uoid = uresult['data'][0]['clOrdId']
                     print(uoid)
                     # 订单币币余额
                     uye = getOrder(uoid)['data'][0]['fillSz']
@@ -304,7 +306,7 @@ def jy():
                     print("\033[31msell操作忽略,BTC余额不足\033[0m")
             else:
                 print("\033[33m###########miss\033[0m")
-
+            
 
             if position_opened:
                 print(position_opened)
@@ -313,6 +315,7 @@ def jy():
                     print("\033[31m亏损超过11U,平仓\033[0m")
                     print(order_id)
                     print("==========")
+
                     # 卖出信号
                     try:
                         byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
@@ -332,8 +335,7 @@ def jy():
                         print(uresult)
                         
                         position_opened = False
-                       
-                        uoid = uresult['data'][0]['clOrdId']
+                        uoid = uresult['data'][0]['ordId']
                         print(uoid)
                         # 订单币币余额
                         uye = getOrder(uoid)['data'][0]['fillSz']
@@ -349,7 +351,7 @@ def jy():
                         oidict['ubcj'] = ucj
                         oidict['ubsx'] = usx
                         dd.append(oidict)
-                    
+                        
 
                         sell_signals[data1.index[15]] = data1['close'].iloc[15]
                         print("\033[32m---hit-----sell\033[0m")
@@ -374,6 +376,6 @@ if __name__ == "__main__":
     dd = []
     position_opened = False
     while True:
-        time.sleep(2)
+        time.sleep(1)
         jy()
         print(position_opened)

@@ -159,7 +159,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                bar="15m",
+                bar="1H",
                 limit="160"
             )
 
@@ -376,6 +376,6 @@ if __name__ == "__main__":
     dd = []
     position_opened = False
     while True:
-        time.sleep(1)
+        time.sleep(2)
         jy()
         print(position_opened)

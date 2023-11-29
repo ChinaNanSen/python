@@ -21,8 +21,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "SOL-USDT-SWAP"
-dbz = "SOL"
+bz = "TRX-USDT-SWAP"
+dbz = "TRX"
 
 def getOrder(oid):
     # 获取订单详情
@@ -52,7 +52,10 @@ def account_balance(currency):
 
 def get_historical_data():
     # 获取历史数据
-    historical_data = marketDataAPI.get_candlesticks(instId=bz, limit="160")
+    historical_data = marketDataAPI.get_candlesticks(
+        instId=bz,
+        bar="30m", 
+        limit="160")
     return pd.DataFrame(historical_data["data"], columns=[
         "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
 
@@ -86,10 +89,10 @@ def trading_logic(data_frame, position_opened):
     elif float(hn) < bu and position_opened:
         print("\033[31m开始卖出\033[0m")
         return "sell"
-    elif position_opened:
-        print("\033[31m亏损超过11U,平仓\033[0m")
+    elif position_opened:    
         pos_data = positions()['data'][0]
         if float(pos_data['upl']) <= -11:
+            print("\033[31m亏损超过11U,平仓\033[0m")
             return "sell"
     else:
         return "hold"

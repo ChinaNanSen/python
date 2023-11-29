@@ -16,7 +16,7 @@ def get_monthly_historical_data(instId, year, month, bar):
     # 计算月份的开始和结束时间戳
     start_date = datetime(year, month, 1)
     end_date = datetime(
-        year, month + 1, 22) if month < 12 else datetime(year + 1, 1, 1)
+        year, month + 2, 28) if month < 12 else datetime(year + 1, 1, 1)
     start_ts = int(start_date.timestamp()) * 1000
     end_ts = int(end_date.timestamp()) * 1000
 
@@ -60,7 +60,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-datas = get_monthly_historical_data("ETH-USDT", 2023, 10, "4H")
+datas = get_monthly_historical_data("TRX-USDT-SWAP", 2023, 9, "1H")
 datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
 datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
 datas.set_index('ts', inplace=True)
@@ -93,9 +93,12 @@ data1.set_index('ts', inplace=True)
 # print(data1)
 mal = finta.TA.SMA(data1, 150)
 mas = finta.TA.SMA(data1, 15)
+ma = finta.TA.SMA(data1, 60)
 
 data1['mal'] = mal.iloc[-1]
 data1['mas'] = mas.iloc[-1]
+data1['ma'] = ma.iloc[-1]
+
 sar = finta.TA.SAR(data1)
 # print(sar.iloc[0])
 # exit(112)
@@ -159,8 +162,9 @@ for index, row in data1.iterrows():
 
     # if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
-    if row['close'] < row['bl'] and balance > 0:
-    # if row['low'] < row['bl'] and balance > 0:
+    # if row['close'] < row['bl'] and balance > 0:
+    # if row['close'] > row['ma'] and balance > 0:
+    if row['low'] < row['bl'] and balance > 0:
         # amount = balance / lprice
         amount = balance / price
         # fee = amount * lprice * commission_rate
@@ -177,8 +181,9 @@ for index, row in data1.iterrows():
 
     # elif row['mas'] < row['mal'] and position > 0:
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
-    elif row['close'] > row['bu'] and position > 0:
-    # elif row['high'] > row['bu'] and position > 0:
+    # elif row['close'] > row['bu'] and position > 0:
+    # elif row['close'] < row['ma'] and position > 0:
+    elif row['high'] > row['bu'] and position > 0:
         # fee = position * hprice * commission_rate
         fee = position * price * commission_rate
         # balance += position * hprice - fee

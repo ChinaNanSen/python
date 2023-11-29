@@ -373,6 +373,6 @@ if __name__ == "__main__":
     dd = []
     position_opened = False
     while True:
-        time.sleep(1)
+        time.sleep(2)
         jy()
         print(position_opened)
