@@ -21,8 +21,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "SOL-USDT-SWAP"
-dbz = "SOL"
+bz = "TRX-USDT-SWAP"
+dbz = "TRX"
 
 def getOrder(oid):
     # 获取订单详情
