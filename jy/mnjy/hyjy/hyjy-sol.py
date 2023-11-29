@@ -8,6 +8,7 @@ import time
 import finta
 import configparser
 import random
+import httpx  # 导入httpx用于异常处理
 
 # API 初始化
 config = configparser.ConfigParser()
@@ -24,6 +25,7 @@ marketDataAPI = MarketData.MarketAPI(flag=flag)
 bz = "SOL-USDT-SWAP"
 dbz = "SOL"
 
+# 其余函数保持不变...
 def getOrder(oid):
     # 获取订单详情
     result = tradeAPI.get_order(
@@ -52,13 +54,18 @@ def account_balance(currency):
 
 def get_historical_data():
     # 获取历史数据
-    historical_data = marketDataAPI.get_candlesticks(
-        instId=bz,
-        bar="30m", 
-        limit="160")
-    return pd.DataFrame(historical_data["data"], columns=[
-        "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    try:
+        historical_data = marketDataAPI.get_candlesticks(
+            instId=bz,
+            bar="30m", 
+            limit="160")
+        return pd.DataFrame(historical_data["data"], columns=[
+            "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    except httpx.HTTPError as e:
+        print(f"网络请求错误: {e}")
+        return None
 
+# 其余函数保持不变...
 def process_data(data_frame):
     # 处理数据
     data_frame['ts'] = data_frame['ts'].apply(
@@ -199,16 +206,27 @@ def main():
     current_order_id = None
     position_opened = False
     print("\033[34m~~~~~starting jy %s\033[0m" % dbz)
+    retry_count = 0  # 重试计数器
+    max_retries = 3  # 最大重试次数
+
     while True:
-        time.sleep(2)
+        time.sleep(2)  # 添加延迟以避免请求过于频繁
         data_frame = get_historical_data()
+
+        if data_frame is None:
+            retry_count += 1
+            if retry_count >= max_retries:
+                print("达到最大重试次数，终止程序")
+                break
+            continue
+
+        # 重置重试计数器
+        retry_count = 0
+
         processed_data = process_data(data_frame)
         trade_type = trading_logic(processed_data, position_opened)
-        
-        
 
         if trade_type == "buy":
-            
             current_order_id = generate_order_id()
             execute_trade(trade_type, current_order_id)
             position_opened = True
@@ -216,7 +234,6 @@ def main():
             execute_trade(trade_type, current_order_id)
             position_opened = False
             current_order_id = None
-        
 
         print("当前持仓状态:", position_opened)
 
