@@ -82,17 +82,18 @@ def trading_logic(data_frame, position_opened):
     print("-------------")
     print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
 
-    if float(ln) > bl and  position_opened == False:
+    if float(ln) < bl and  position_opened == False:
         print(position_opened)
         print("\033[32m开始买入\033[0m")
         return "buy"
-    elif float(hn) < bu and position_opened:
+    elif float(hn) > bu and position_opened:
         print("\033[31m开始卖出\033[0m")
         return "sell"
     elif position_opened:    
         pos_data = positions()['data'][0]
-        if float(pos_data['upl']) <= -11:
-            print("\033[31m亏损超过11U,平仓\033[0m")
+        print(pos_data['upl'])
+        if float(pos_data['upl']) >= -10:   
+            print("\033[31m亏损超过10U,平仓\033[0m")
             return "sell"
     else:
         return "hold"
@@ -101,8 +102,8 @@ def execute_trade(trade_type, order_id):
     # 执行交易
     if trade_type == "buy":
         # 买入逻辑
-        
-        order_id = generate_order_id()
+        print(order_id)
+
         print("-----")
         # 买入信号
         ye = account_balance("USDT")
@@ -157,6 +158,9 @@ def execute_trade(trade_type, order_id):
         # 卖出信号
         try:
             byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
+            # byex = getOrder("buy"+str(order_id))
+            # print(byex)
+            # exit(111)
         except Exception as es:
             print(f"\033[31m没有买入订单,忽略: {es} {byex}\033[0m")
         if float(byex) != 0:
@@ -169,7 +173,7 @@ def execute_trade(trade_type, order_id):
             )
             print(uresult)
             position_opened = False
-            uoid = uresult['data'][0]['ordId']
+            uoid = uresult['data'][0]['clOrdId']
             print(uoid)
             # 订单币币余额
             uye = getOrder(uoid)['data'][0]['fillSz']
@@ -179,11 +183,11 @@ def execute_trade(trade_type, order_id):
             ucj = getOrder(uoid)['data'][0]['fillPx']
             # 订单手续费
             usx = getOrder(uoid)['data'][0]['fee']
-            oidict['uoid'] = "sell"+str(order_id)
-            oidict['ubye'] = uye
-            oidict['ubxf'] = uxf
-            oidict['ubcj'] = ucj
-            oidict['ubsx'] = usx
+            # oidict['uoid'] = "sell"+str(order_id)
+            # oidict['ubye'] = uye
+            # oidict['ubxf'] = uxf
+            # oidict['ubcj'] = ucj
+            # oidict['ubsx'] = usx
             print("\033[32m---hit-----sell\033[0m")
         else:
             print("\033[31msell操作忽略,BTC余额不足\033[0m")
@@ -192,18 +196,26 @@ def execute_trade(trade_type, order_id):
 
 def main():
     global position_opened
+    current_order_id = None
     position_opened = False
     print("\033[34m~~~~~starting jy %s\033[0m" % dbz)
     while True:
-        time.sleep(3)
+        time.sleep(2)
         data_frame = get_historical_data()
         processed_data = process_data(data_frame)
         trade_type = trading_logic(processed_data, position_opened)
-        order_id = generate_order_id()
+        
+        
 
-        if trade_type in ["buy", "sell"]:
-            execute_trade(trade_type, order_id)
-            position_opened = (trade_type == "buy")
+        if trade_type == "buy":
+            
+            current_order_id = generate_order_id()
+            execute_trade(trade_type, current_order_id)
+            position_opened = True
+        elif trade_type == "sell" and current_order_id is not None:
+            execute_trade(trade_type, current_order_id)
+            position_opened = False
+            current_order_id = None
         
 
         print("当前持仓状态:", position_opened)

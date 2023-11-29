@@ -60,7 +60,7 @@ def get_monthly_historical_data(instId, year, month, bar):
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-datas = get_monthly_historical_data("TRX-USDT-SWAP", 2023, 9, "1H")
+datas = get_monthly_historical_data("BTC-USDT", 2023, 10, "5m")
 datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
 datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
 datas.set_index('ts', inplace=True)
