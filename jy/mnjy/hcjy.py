@@ -4,6 +4,7 @@ import pandas as pd
 import time
 from datetime import datetime
 import finta
+import ccxt
 
 # 初始化API
 config = configparser.ConfigParser()
@@ -12,55 +13,104 @@ flag = config['OKX']['flag']
 marketDataAPI = MarketData.MarketAPI(flag=flag)
 
 
-def get_monthly_historical_data(instId, year, month, bar):
-    # 计算月份的开始和结束时间戳
-    start_date = datetime(year, month, 1)
-    end_date = datetime(
-        year, month + 2, 28) if month < 12 else datetime(year + 1, 1, 1)
-    start_ts = int(start_date.timestamp()) * 1000
-    end_ts = int(end_date.timestamp()) * 1000
+# def get_monthly_historical_data(instId, year, month, bar):
+def get_monthly_historical_data():
+    # # 计算月份的开始和结束时间戳
+    # start_date = datetime(year, month, 1)
+    # end_date = datetime(
+    #     year, month + 2, 28) if month < 12 else datetime(year + 1, 1, 1)
+    # start_ts = int(start_date.timestamp()) * 1000
+    # end_ts = int(end_date.timestamp()) * 1000
 
-    print(start_date, end_date)
+    # print(start_date, end_date)
 
-    all_data = []
-    last_ts = end_ts
+    # all_data = []
+    # last_ts = end_ts
 
-    while True:
-        result = marketDataAPI.get_history_candlesticks(
-            # result = marketDataAPI.get_candlesticks(
-            instId=instId,
-            bar=bar,
-            before=str(start_ts),
-            # after="1699852860000",
-            after=str(last_ts),
-            limit="100"
-        )
-        print(last_ts, start_ts)
+  
 
-        if 'data' in result and len(result['data']) > 0:
-            batch_data = result['data']
-            first_ts = int(batch_data[0][0])
+    
+    # 获取历史数据
+    # ohlcv = exchange.fetch_ohlcv(symbol, timeframe)
 
-            if first_ts < start_ts:
-                # 过滤掉开始时间之前的数据
-                batch_data = [x for x in batch_data if int(x[0]) >= start_ts]
-                all_data.extend(batch_data)
-                break
-            else:
-                all_data.extend(batch_data)
-                last_ts = batch_data[-1][0]  # 更新时间戳为最后一条数据的时间戳
+    # 转换为 DataFrame
+    # df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
+    # df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
+    # return pd.DataFrame(all_ohlcv, columns=["ts", "open", "high", "low", "close", "vol"])
 
-            time.sleep(0.1)  # 遵守API的限速规则
-        else:
-            break  # 如果没有数据返回，则停止循环
+    # 显示数据
+    # print(df)
+    # exit(33)
 
-    return pd.DataFrame(all_data, columns=[
-        "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    # while True:
+        # 创建交易所实例
+    exchange = ccxt.okx()
+
+    # 设置交易对和时间框架
+    symbol = 'BTC/USDT'  # 比特币与USDT的交易对
+    timeframe = '2h'  # 时间框架为1小时
+
+    # 设定开始和结束时间（示例）
+    start_str = '2023-09-01 00:00:00'
+    end_str = '2023-10-10 00:00:00'
+
+    # 将字符串日期转换为毫秒时间戳
+    start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
+    end_ts = int(datetime.strptime(end_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
+
+    # 获取历史数据
+    all_ohlcv = []
+    while start_ts < end_ts:
+        ohlcv = exchange.fetch_ohlcv(symbol, timeframe, since=start_ts)
+        if not ohlcv:
+            break
+        start_ts = ohlcv[-1][0] + exchange.parse_timeframe(timeframe) * 1000
+        all_ohlcv.extend(ohlcv)
+        time.sleep(exchange.rateLimit / 1000)  # 请遵循交易所的速率限制
+
+    # print(all_ohlcv)
+    return pd.DataFrame(all_ohlcv, columns=["ts", "open", "high", "low", "close", "vol"])
+    
+        # result = marketDataAPI.get_history_candlesticks(
+        #     # result = marketDataAPI.get_candlesticks(
+        #     instId=instId,
+        #     bar=bar,
+        #     before=str(start_ts),
+        #     # after="1699852860000",
+        #     after=str(last_ts),
+        #     limit="100"
+        # )
+        # print(last_ts, start_ts)
+
+    
+        # result = ccxt_historical_data()
+
+    #     if 'data' in result and len(result['data']) > 0:
+    #         batch_data = result['data']
+    #         first_ts = int(batch_data[0][0])
+
+    #         if first_ts < start_ts:
+    #             # 过滤掉开始时间之前的数据
+    #             batch_data = [x for x in batch_data if int(x[0]) >= start_ts]
+    #             all_data.extend(batch_data)
+    #             break
+    #         else:
+    #             all_data.extend(batch_data)
+    #             last_ts = batch_data[-1][0]  # 更新时间戳为最后一条数据的时间戳
+
+    #         time.sleep(0.1)  # 遵守API的限速规则
+    #     else:
+    #         break  # 如果没有数据返回，则停止循环
+
+    # return pd.DataFrame(all_data, columns=[
+    #     "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    
 
 
 # 示例用法
 # 获取2023年5月的BTC-USDT历史数据
-datas = get_monthly_historical_data("BTC-USDT", 2023, 10, "5m")
+# datas = get_monthly_historical_data("BTC-USDT", 2023, 10, "5m")
+datas = get_monthly_historical_data()
 datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
 datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
 datas.set_index('ts', inplace=True)
@@ -71,7 +121,7 @@ print("数据写入成功！！！")
 
 # 假设data1是您的历史数据DataFrame
 data1 = pd.read_csv(csv_file_name)
-data1 = data1.iloc[::-1]
+# data1 = data1.iloc[::-1]
 
 # print(data1)
 # data1['mas'] = finta.TA.EMA(data1,15)
@@ -165,17 +215,17 @@ for index, row in data1.iterrows():
     # if row['close'] < row['bl'] and balance > 0:
     # if row['close'] > row['ma'] and balance > 0:
     if row['low'] < row['bl'] and balance > 0:
-        # amount = balance / lprice
-        amount = balance / price
-        # fee = amount * lprice * commission_rate
-        fee = amount * price * commission_rate
-        # balance -= amount * lprice + fee
-        balance -= amount * price + fee
+        amount = balance / lprice
+        # amount = balance / price
+        fee = amount * lprice * commission_rate
+        # fee = amount * price * commission_rate
+        balance -= amount * lprice + fee
+        # balance -= amount * price + fee
         position += amount
         total_commission += fee  # 累加手续费
-        # trades.append({'type': 'buy', 'price': lprice,
-        trades.append({'type': 'buy', 'price': price,
-                      'amount': amount, 'fee': fee, 'timestamp': row.name})
+        trades.append({'type': 'buy', 'price': lprice,
+        # trades.append({'type': 'buy', 'price': price,
+                      'amount': amount, 'fee': fee, 'timestamp': row.name, "ln": row['high'], "bl": row['bl']})
 
     # 检查卖出信号
 
@@ -184,14 +234,15 @@ for index, row in data1.iterrows():
     # elif row['close'] > row['bu'] and position > 0:
     # elif row['close'] < row['ma'] and position > 0:
     elif row['high'] > row['bu'] and position > 0:
-        # fee = position * hprice * commission_rate
-        fee = position * price * commission_rate
-        # balance += position * hprice - fee
-        balance += position * price - fee
+        fee = position * hprice * commission_rate
+        # fee = position * price * commission_rate
+        trade_amount = position  # 保存当前持仓量用于交易记录
+        balance += position * hprice - fee
+        # balance += position * price - fee
         position = 0
-        # trades.append({'type': 'sell', 'price': hprice,
-        trades.append({'type': 'sell', 'price': price,
-                      'amount': position, 'fee': fee, 'timestamp': row.name})
+        trades.append({'type': 'sell', 'price': hprice,
+        # trades.append({'type': 'sell', 'price': price,
+                      'amount': trade_amount, 'fee': fee, 'timestamp': row.name, "hn": row['high'], "bu": row['bu']})
 
 # 性能评估
 # final_balance = balance + position * data1['high'].iloc[-1]
