@@ -24,8 +24,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "LTC-USDT-SWAP"
-dbz = "LTC"
+bz = "ETH-USDT-SWAP"
+dbz = "ETH"
 
 
 # 设置字体
@@ -159,7 +159,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                # bar="15m",
+                bar="1D",
                 limit="160"
             )
 
@@ -174,10 +174,10 @@ def jy():
             ma15 = finta.TA.SMA(data1, 15)
             ma150 = finta.TA.SMA(data1, 150)
             bmacd = finta.TA.MACD(data1)
-            bbands = finta.TA.BBANDS(data1,30,3)
-            bu = bbands.iloc[29]['BB_UPPER']
-            bm = bbands.iloc[29]['BB_MIDDLE']
-            bl = bbands.iloc[29]['BB_LOWER']
+            bbands = finta.TA.BBANDS(data1)
+            bu = bbands.iloc[19]['BB_UPPER']
+            bm = bbands.iloc[19]['BB_MIDDLE']
+            bl = bbands.iloc[19]['BB_LOWER']
             cn = data1['close'].iloc[0]
             hn = data1['high'].iloc[0]
             ln = data1['low'].iloc[0]
@@ -186,9 +186,9 @@ def jy():
             # exit(11)
             # print("%s\n%s\n" %
             #       (ma15.iloc[15], ma150.iloc[150]))
-            print("ln:%s\n3bl:%s\n" %(ln, bl))
+            print("ln:%s\nbl:%s\n" %(ln, bl))
             print("---------------")
-            print("hn:%s\n3bu:%s\n" %(ln, bu))
+            print("hn:%s\nbu:%s\n" %(ln, bu))
 
 
             # 检查交叉点并执行交易逻辑
@@ -311,6 +311,7 @@ def jy():
             if position_opened:
                 print(position_opened)
                 pos_data = positions()['data'][0]
+                print(pos_data['upl'])
                 if float(pos_data['upl']) <= -10:
                     print("\033[31m亏损超过11U,平仓\033[0m")
                     print(order_id)
@@ -376,6 +377,6 @@ if __name__ == "__main__":
     dd = []
     position_opened = False
     while True:
-        time.sleep(1)
+        time.sleep(2)
         jy()
         print(position_opened)

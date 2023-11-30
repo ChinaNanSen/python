@@ -24,8 +24,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "LTC-USDT-SWAP"
-dbz = "LTC"
+bz = "BTC-USDT-SWAP"
+dbz = "BTC"
 
 
 # 设置字体
@@ -159,7 +159,7 @@ def jy():
             historical_data = marketDataAPI.get_candlesticks(
                 instId=bz,
                 # before="",
-                bar="1H",
+                bar="1D",
                 limit="160"
             )
 
@@ -311,6 +311,7 @@ def jy():
             if position_opened:
                 print(position_opened)
                 pos_data = positions()['data'][0]
+                print(pos_data['upl'])
                 if float(pos_data['upl']) <= -10:
                     print("\033[31m亏损超过11U,平仓\033[0m")
                     print(order_id)

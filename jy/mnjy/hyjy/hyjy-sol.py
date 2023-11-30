@@ -22,8 +22,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "SOL-USDT-SWAP"
-dbz = "SOL"
+bz = "ETH-USDT-SWAP"
+dbz = "ETH"
 
 # 其余函数保持不变...
 def getOrder(oid):
@@ -57,7 +57,7 @@ def get_historical_data():
     try:
         historical_data = marketDataAPI.get_candlesticks(
             instId=bz,
-            bar="30m", 
+            bar="1D", 
             limit="160")
         return pd.DataFrame(historical_data["data"], columns=[
             "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
