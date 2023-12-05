@@ -52,19 +52,25 @@ def account_balance(currency):
     except Exception as e:
         print(f"Error getting account balance: {e}")
         return None
+    
+
+
+# def get_historical_datas():
+#     #获取历史数据
+#     try:
+#         historical_data = marketDataAPI.get_candlesticks(
+#             instId=bz,
+#             bar="30m", 
+#             limit="160")
+#         return pd.DataFrame(historical_data["data"], columns=[
+#             "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+#     except httpx.HTTPError as e:
+#         print(f"网络请求错误: {e}")
+#         return None
+    
 
 def get_historical_data():
-    # 获取历史数据
-    # try:
-    #     historical_data = marketDataAPI.get_candlesticks(
-    #         instId=bz,
-    #         bar="1D", 
-    #         limit="160")
-    #     return pd.DataFrame(historical_data["data"], columns=[
-    #         "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
-    # except httpx.HTTPError as e:
-    #     print(f"网络请求错误: {e}")
-    #     return None
+    
     exchange = ccxt.okx()
 
     # 设置交易对和时间框架

@@ -22,8 +22,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "ETH-USDT-SWAP"
-dbz = "ETH"
+bz = "SOL-USDT-SWAP"
+dbz = "SOL"
 
 # 其余函数保持不变...
 def getOrder(oid):
