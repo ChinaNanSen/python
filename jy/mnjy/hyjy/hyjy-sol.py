@@ -9,6 +9,7 @@ import finta
 import configparser
 import random
 import httpx  # 导入httpx用于异常处理
+import ccxt
 
 # API 初始化
 config = configparser.ConfigParser()
@@ -22,8 +23,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "ETH-USDT-SWAP"
-dbz = "ETH"
+bz = "SOL-USDT-SWAP"
+dbz = "SOL"
 
 # 其余函数保持不变...
 def getOrder(oid):
@@ -54,16 +55,30 @@ def account_balance(currency):
 
 def get_historical_data():
     # 获取历史数据
-    try:
-        historical_data = marketDataAPI.get_candlesticks(
-            instId=bz,
-            bar="1D", 
-            limit="160")
-        return pd.DataFrame(historical_data["data"], columns=[
-            "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
-    except httpx.HTTPError as e:
-        print(f"网络请求错误: {e}")
-        return None
+    # try:
+    #     historical_data = marketDataAPI.get_candlesticks(
+    #         instId=bz,
+    #         bar="1D", 
+    #         limit="160")
+    #     return pd.DataFrame(historical_data["data"], columns=[
+    #         "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    # except httpx.HTTPError as e:
+    #     print(f"网络请求错误: {e}")
+    #     return None
+    exchange = ccxt.okx()
+
+    # 设置交易对和时间框架
+    symbol = dbz+'/USDT'  # 比特币与USDT的交易对
+    # print(symbol)
+    timeframe = '30m'  # 时间框架
+
+    # 获取历史数据
+    ohlcv = exchange.fetch_ohlcv(symbol, timeframe)
+
+    time.sleep(exchange.rateLimit / 1000)
+
+    return pd.DataFrame(ohlcv, columns=["ts", "open", "high", "low", "close", "vol"])
+
 
 # 其余函数保持不变...
 def process_data(data_frame):

@@ -48,7 +48,7 @@ def get_monthly_historical_data():
 
     # 设置交易对和时间框架
     symbol = 'BTC/USDT'  # 比特币与USDT的交易对
-    timeframe = '12h'  # 时间框架为1小时
+    timeframe = '4h'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
     start_str = '2021-10-01 00:00:00'
@@ -62,7 +62,9 @@ def get_monthly_historical_data():
     all_ohlcv = []
     while start_ts < end_ts:
         ohlcv = exchange.fetch_ohlcv(symbol, timeframe, since=start_ts)
+        # ohlcv = exchange.fetch_ohlcv(symbol, timeframe)
         # print(ohlcv)
+        # exit(11)
         if not ohlcv:
             break
         # 过滤并处理数据
@@ -221,11 +223,11 @@ for index, row in data1.iterrows():
     # exit(1)
     
 
-    # if row['mas'] > row['mal'] and balance > 0:
+    if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
     # if row['close'] < row['bl'] and balance > 0:
     # if row['close'] > row['ma'] and balance > 0:
-    if row['close'] < row['bl'] and balance > 0:
+    # if row['close'] < row['bl'] and balance > 0:
         # amount = balance / lprice
         amount = balance / price
         fee = amount * lprice * commission_rate
@@ -240,11 +242,11 @@ for index, row in data1.iterrows():
 
     # 检查卖出信号
 
-    # elif row['mas'] < row['mal'] and position > 0:
+    elif row['mas'] < row['mal'] and position > 0:
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
     # elif row['close'] > row['bu'] and position > 0:
     # elif row['close'] < row['ma'] and position > 0:
-    elif row['close'] > row['bu'] and position > 0:
+    # elif row['close'] > row['bu'] and position > 0:
         # fee = position * hprice * commission_rate
         fee = position * price * commission_rate
         trade_amount = position  # 保存当前持仓量用于交易记录
