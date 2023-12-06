@@ -9,6 +9,7 @@ import finta
 import configparser
 import random
 import httpx  # 导入httpx用于异常处理
+import ccxt
 
 # API 初始化
 config = configparser.ConfigParser()
@@ -51,19 +52,40 @@ def account_balance(currency):
     except Exception as e:
         print(f"Error getting account balance: {e}")
         return None
+    
+
+
+# def get_historical_datas():
+#     #获取历史数据
+#     try:
+#         historical_data = marketDataAPI.get_candlesticks(
+#             instId=bz,
+#             bar="30m", 
+#             limit="160")
+#         time.sleep(0.1)
+#         return pd.DataFrame(historical_data["data"], columns=[
+#             "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+#     except httpx.HTTPError as e:
+#         print(f"网络请求错误: {e}")
+#         return None
+    
 
 def get_historical_data():
+    
+    exchange = ccxt.okx()
+
+    # 设置交易对和时间框架
+    symbol = dbz+'/USDT'  # 比特币与USDT的交易对
+    # print(symbol)
+    timeframe = '30m'  # 时间框架
+
     # 获取历史数据
-    try:
-        historical_data = marketDataAPI.get_candlesticks(
-            instId=bz,
-            bar="30m", 
-            limit="160")
-        return pd.DataFrame(historical_data["data"], columns=[
-            "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
-    except httpx.HTTPError as e:
-        print(f"网络请求错误: {e}")
-        return None
+    ohlcv = exchange.fetch_ohlcv(symbol, timeframe)
+
+    time.sleep(exchange.rateLimit / 1000)
+
+    return pd.DataFrame(ohlcv, columns=["ts", "open", "high", "low", "close", "vol"])
+
 
 # 其余函数保持不变...
 def process_data(data_frame):
@@ -82,15 +104,13 @@ def trading_logic(data_frame, position_opened):
     bbands = finta.TA.BBANDS(data_frame)
     bu = bbands.iloc[-1]['BB_UPPER']
     bl = bbands.iloc[-1]['BB_LOWER']
-    cn = data_frame['close'].iloc[0]
-    hn = data_frame['high'].iloc[0]
-    ln = data_frame['low'].iloc[0]
-    print(data_frame)
-    print(bbands)
-    exit(11)
-    print("\033[32mcn:%s\nbl:%s\n\033[0m" %(ln, bl))
+    cn = data_frame['close'].iloc[-1]
+    hn = data_frame['high'].iloc[-1]
+    ln = data_frame['low'].iloc[-1]
+    
+    print("\033[32mln:%s\nbl:%s\n\033[0m" %(ln, bl))
     print("-------------")
-    print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
+    print("\033[31mhn:%s\nbu:%s\n\033[0m" %(hn, bu))
 
     if float(ln) < bl and  position_opened == False:
         print(position_opened)
@@ -215,6 +235,8 @@ def main():
     while True:
         time.sleep(2)  # 添加延迟以避免请求过于频繁
         data_frame = get_historical_data()
+        # data_frames = get_historical_datas()
+
 
         if data_frame is None:
             retry_count += 1
@@ -227,7 +249,7 @@ def main():
         retry_count = 0
 
         processed_data = process_data(data_frame)
-        trade_type = trading_logic(processed_data, position_opened)
+        trade_type = trading_logic(processed_data,  position_opened)
 
         if trade_type == "buy":
             current_order_id = generate_order_id()
