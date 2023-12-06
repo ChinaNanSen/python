@@ -62,6 +62,7 @@ def get_historical_datas():
             instId=bz,
             bar="30m", 
             limit="160")
+        time.sleep(0.1)
         return pd.DataFrame(historical_data["data"], columns=[
             "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     except httpx.HTTPError as e:
