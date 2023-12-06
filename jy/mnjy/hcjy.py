@@ -48,11 +48,11 @@ def get_monthly_historical_data():
 
     # 设置交易对和时间框架
     symbol = 'BTC/USDT'  # 比特币与USDT的交易对
-    timeframe = '4h'  # 时间框架为1小时
+    timeframe = '30m'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2021-10-01 00:00:00'
-    end_str = '2022-12-26 00:00:00'
+    start_str = '2023-11-26 00:00:00'
+    end_str = '2023-11-29 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
     start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
@@ -223,39 +223,39 @@ for index, row in data1.iterrows():
     # exit(1)
     
 
-    if row['mas'] > row['mal'] and balance > 0:
+    # if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
     # if row['close'] < row['bl'] and balance > 0:
     # if row['close'] > row['ma'] and balance > 0:
-    # if row['close'] < row['bl'] and balance > 0:
-        # amount = balance / lprice
-        amount = balance / price
+    if row['low'] < row['bl'] and balance > 0:
+        amount = balance / lprice
+        # amount = balance / price
         fee = amount * lprice * commission_rate
-        fee = amount * price * commission_rate
-        # balance -= amount * lprice + fee
-        balance -= amount * price + fee
+        # fee = amount * price * commission_rate
+        balance -= amount * lprice + fee
+        # balance -= amount * price + fee
         position += amount
         total_commission += fee  # 累加手续费
-        # trades.append({'type': 'buy', 'price': lprice,
-        trades.append({'type': 'buy', 'price': price,
-                      'amount': amount, 'fee': fee, 'timestamp': row.name, "ln": row['high'], "bl": row['bl']})
+        trades.append({'type': 'buy', 'price': lprice,
+        # trades.append({'type': 'buy', 'price': price,
+                      'amount': amount, 'fee': fee, 'timestamp': row.name})
 
     # 检查卖出信号
 
-    elif row['mas'] < row['mal'] and position > 0:
+    # elif row['mas'] < row['mal'] and position > 0:
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
     # elif row['close'] > row['bu'] and position > 0:
     # elif row['close'] < row['ma'] and position > 0:
-    # elif row['close'] > row['bu'] and position > 0:
-        # fee = position * hprice * commission_rate
-        fee = position * price * commission_rate
+    elif row['high'] > row['bu'] and position > 0:
+        fee = position * hprice * commission_rate
+        # fee = position * price * commission_rate
         trade_amount = position  # 保存当前持仓量用于交易记录
-        # balance += position * hprice - fee
-        balance += position * price - fee
+        balance += position * hprice - fee
+        # balance += position * price - fee
         position = 0
-        # trades.append({'type': 'sell', 'price': hprice,
-        trades.append({'type': 'sell', 'price': price,
-                      'amount': trade_amount, 'fee': fee, 'timestamp': row.name, "hn": row['high'], "bu": row['bu']})
+        trades.append({'type': 'sell', 'price': hprice,
+        # trades.append({'type': 'sell', 'price': price,
+                      'amount': trade_amount, 'fee': fee, 'timestamp': row.name})
 
 # 性能评估
 # final_balance = balance + position * data1['high'].iloc[-1]

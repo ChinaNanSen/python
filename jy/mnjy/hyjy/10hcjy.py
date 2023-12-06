@@ -51,8 +51,8 @@ def get_monthly_historical_data():
     timeframe = '12h'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2021-10-01 00:00:00'
-    end_str = '2022-12-26 00:00:00'
+    start_str = '2023-06-23 00:00:00'
+    end_str = '2023-10-15 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
     start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)

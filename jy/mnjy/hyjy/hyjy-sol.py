@@ -55,18 +55,18 @@ def account_balance(currency):
     
 
 
-# def get_historical_datas():
-#     #获取历史数据
-#     try:
-#         historical_data = marketDataAPI.get_candlesticks(
-#             instId=bz,
-#             bar="30m", 
-#             limit="160")
-#         return pd.DataFrame(historical_data["data"], columns=[
-#             "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
-#     except httpx.HTTPError as e:
-#         print(f"网络请求错误: {e}")
-#         return None
+def get_historical_datas():
+    #获取历史数据
+    try:
+        historical_data = marketDataAPI.get_candlesticks(
+            instId=bz,
+            bar="30m", 
+            limit="160")
+        return pd.DataFrame(historical_data["data"], columns=[
+            "ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    except httpx.HTTPError as e:
+        print(f"网络请求错误: {e}")
+        return None
     
 
 def get_historical_data():
@@ -95,7 +95,7 @@ def process_data(data_frame):
     data_frame.set_index('ts', inplace=True)
     return data_frame
 
-def trading_logic(data_frame, position_opened):
+def trading_logic(data_frame, data_frames, position_opened):
     
     # 交易逻辑
     ma15 = finta.TA.SMA(data_frame, 15)
@@ -106,15 +106,17 @@ def trading_logic(data_frame, position_opened):
     cn = data_frame['close'].iloc[0]
     hn = data_frame['high'].iloc[0]
     ln = data_frame['low'].iloc[0]
-    print("\033[32mcn:%s\nbl:%s\n\033[0m" %(ln, bl))
+    hns = data_frames['high'].iloc[0]
+    lns = data_frames['low'].iloc[0]
+    print("\033[32mln:%s\nbl:%s\n\033[0m" %(lns, bl))
     print("-------------")
-    print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
+    print("\033[31mhn:%s\nbu:%s\n\033[0m" %(hns, bu))
 
-    if float(ln) < bl and  position_opened == False:
+    if float(lns) < bl and  position_opened == False:
         print(position_opened)
         print("\033[32m开始买入\033[0m")
         return "buy"
-    elif float(hn) > bu and position_opened:
+    elif float(hns) > bu and position_opened:
         print("\033[31m开始卖出\033[0m")
         return "sell"
     elif position_opened:    
@@ -233,6 +235,8 @@ def main():
     while True:
         time.sleep(2)  # 添加延迟以避免请求过于频繁
         data_frame = get_historical_data()
+        data_frames = get_historical_datas()
+
 
         if data_frame is None:
             retry_count += 1
@@ -245,7 +249,7 @@ def main():
         retry_count = 0
 
         processed_data = process_data(data_frame)
-        trade_type = trading_logic(processed_data, position_opened)
+        trade_type = trading_logic(processed_data, data_frames, position_opened)
 
         if trade_type == "buy":
             current_order_id = generate_order_id()
