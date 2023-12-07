@@ -51,8 +51,8 @@ def get_monthly_historical_data():
     timeframe = '30m'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2023-11-26 00:00:00'
-    end_str = '2023-11-29 00:00:00'
+    start_str = '2023-11-01 00:00:00'
+    end_str = '2023-12-01 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
     start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
@@ -173,12 +173,19 @@ data1['macd'] = macd.iloc[-1]['MACD']
 data1['sig'] = macd.iloc[-1]['SIGNAL']
 # bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
-data1['bu'] = bbands.iloc[-1]['BB_UPPER']
-data1['bm'] = bbands.iloc[-1]['BB_MIDDLE']
-data1['bl'] = bbands.iloc[-1]['BB_LOWER']
-data1['close'].iloc[0]
-data1['high'].iloc[0]
-data1['low'].iloc[0]
+data1['bu'] = bbands.iloc[19]['BB_UPPER']
+data1['bm'] = bbands.iloc[19]['BB_MIDDLE']
+data1['bl'] = bbands.iloc[19]['BB_LOWER']
+cn = data1['close'].iloc[0]
+hn = data1['high'].iloc[0]
+ln = data1['low'].iloc[0]
+# print(bbands)
+# print(data1['bu'])
+# print(data1['bl'])
+# print(data1)
+# print(ln)
+# print(hn)
+# exit(111)
 # print(bbands )
 
 # print(data1['ts'].iloc[-1],"   ",bbands['BB_UPPER'].iloc[-1])

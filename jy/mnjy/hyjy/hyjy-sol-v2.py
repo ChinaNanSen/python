@@ -107,6 +107,10 @@ def trading_logic(data_frame, position_opened):
     cn = data_frame['close'].iloc[-1]
     hn = data_frame['high'].iloc[-1]
     ln = data_frame['low'].iloc[-1]
+    print(bbands)
+    print(ln)
+    print(hn)
+    exit(111)
     
     print("\033[32mln:%s\nbl:%s\n\033[0m" %(ln, bl))
     print("-------------")

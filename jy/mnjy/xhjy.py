@@ -27,7 +27,7 @@ fig, ax = plt.subplots(figsize=(12, 6))
 
 
 # 绘制 K 线图
-ax.plot(data1['date'], data1['close'], label='LTC-收盘价')
+ax.plot(data1['date'], data1['close'], label='收盘价')
 
 # print(buy_signals.columns)
 

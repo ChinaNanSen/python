@@ -48,11 +48,11 @@ def get_monthly_historical_data():
 
     # 设置交易对和时间框架
     symbol = 'BTC/USDT'  # 比特币与USDT的交易对
-    timeframe = '12h'  # 时间框架为1小时
+    timeframe = '30m'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2023-06-23 00:00:00'
-    end_str = '2023-10-15 00:00:00'
+    start_str = '2023-11-01 00:00:00'
+    end_str = '2023-12-01 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
     start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
@@ -174,9 +174,16 @@ bbands = finta.TA.BBANDS(data1)
 data1['bu'] = bbands.iloc[-1]['BB_UPPER']
 data1['bm'] = bbands.iloc[-1]['BB_MIDDLE']
 data1['bl'] = bbands.iloc[-1]['BB_LOWER']
-data1['close'].iloc[0]
-data1['high'].iloc[0]
-data1['low'].iloc[0]
+data1['close'].iloc[-1]
+data1['high'].iloc[-1]
+ln = data1['low'].iloc[-1]
+# print(bbands)
+# print(data1['bu'])
+# print(data1['bl'])
+# print(data1)
+# print(ln)
+# print(hn)
+# exit(111)
 # print(bbands )
 
 # print(data1['ts'].iloc[-1],"   ",bbands['BB_UPPER'].iloc[-1])
