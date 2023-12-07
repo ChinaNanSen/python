@@ -47,12 +47,12 @@ def get_monthly_historical_data():
     exchange = ccxt.okx()
 
     # 设置交易对和时间框架
-    symbol = 'BTC/USDT'  # 比特币与USDT的交易对
+    symbol = 'SOL/USDT'  # 比特币与USDT的交易对
     timeframe = '30m'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2023-11-01 00:00:00'
-    end_str = '2023-12-01 00:00:00'
+    start_str = '2023-12-01 00:00:00'
+    end_str = '2023-12-08 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
     start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
@@ -123,12 +123,12 @@ def get_monthly_historical_data():
 # 获取2023年5月的BTC-USDT历史数据
 # datas = get_monthly_historical_data("BTC-USDT", 2023, 10, "5m")
 
-datas = get_monthly_historical_data()
-datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
-datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-datas.set_index('ts', inplace=True)
+# datas = get_monthly_historical_data()
+# datas['ts'] = pd.to_datetime(datas['ts'], unit='ms')
+# datas['ts'] = datas['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+# datas.set_index('ts', inplace=True)
 csv_file_name = 'historical_data_2023_05.csv'
-datas.to_csv(csv_file_name)
+# datas.to_csv(csv_file_name)
 print("数据写入成功！！！")
 
 
@@ -173,18 +173,24 @@ data1['macd'] = macd.iloc[-1]['MACD']
 data1['sig'] = macd.iloc[-1]['SIGNAL']
 # bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
-data1['bu'] = bbands.iloc[19]['BB_UPPER']
-data1['bm'] = bbands.iloc[19]['BB_MIDDLE']
-data1['bl'] = bbands.iloc[19]['BB_LOWER']
+data1['bu'] = bbands.iloc[-27]['BB_UPPER']
+data1['bm'] = bbands.iloc[-27]['BB_MIDDLE']
+data1['bl'] = bbands.iloc[-27]['BB_LOWER']
 cn = data1['close'].iloc[0]
 hn = data1['high'].iloc[0]
 ln = data1['low'].iloc[0]
+ich = finta.TA.ICHIMOKU(data1)
+data1['ic'] = ich.iloc[-27]['CHIKOU']
+
+# # print(ich)
+# print(data1['ic'])
+# # print(data1['ic'])
+# # print(data1['bu'])
 # print(bbands)
-# print(data1['bu'])
 # print(data1['bl'])
-# print(data1)
-# print(ln)
-# print(hn)
+# # print(data1)
+# # print(ln)
+# # print(hn)
 # exit(111)
 # print(bbands )
 
@@ -205,7 +211,7 @@ commission_rate = 0.001
 slippage = 0.0005
 
 # 初始化账户余额和持仓
-initial_balance = 10000
+initial_balance = 2000
 balance = initial_balance
 position = 0
 total_commission = 0  # 总手续费
@@ -226,7 +232,7 @@ for index, row in data1.iterrows():
 
     # 检查买入信号
     
-    # print(row)
+    print(row)
     # exit(1)
     
 
@@ -234,7 +240,8 @@ for index, row in data1.iterrows():
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
     # if row['close'] < row['bl'] and balance > 0:
     # if row['close'] > row['ma'] and balance > 0:
-    if row['low'] < row['bl'] and balance > 0:
+    # if row['low'] < row['bl'] and balance > 0:
+    if row['ic'] < row['bl'] and balance > 0:
         amount = balance / lprice
         # amount = balance / price
         fee = amount * lprice * commission_rate
@@ -253,7 +260,8 @@ for index, row in data1.iterrows():
     # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
     # elif row['close'] > row['bu'] and position > 0:
     # elif row['close'] < row['ma'] and position > 0:
-    elif row['high'] > row['bu'] and position > 0:
+    # elif row['high'] > row['bu'] and position > 0:
+    elif row['ic'] > row['bu'] and position > 0:
         fee = position * hprice * commission_rate
         # fee = position * price * commission_rate
         trade_amount = position  # 保存当前持仓量用于交易记录

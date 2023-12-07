@@ -80,13 +80,15 @@ def trading_logic(data_frame, position_opened):
     ma15 = finta.TA.SMA(data_frame, 15)
     ma150 = finta.TA.SMA(data_frame, 150)
     bbands = finta.TA.BBANDS(data_frame)
-    bu = bbands.iloc[-1]['BB_UPPER']
-    bl = bbands.iloc[-1]['BB_LOWER']
+    bu = bbands.iloc[19]['BB_UPPER']
+    bl = bbands.iloc[19]['BB_LOWER']
     cn = data_frame['close'].iloc[0]
     hn = data_frame['high'].iloc[0]
     ln = data_frame['low'].iloc[0]
-    print(data_frame)
+    # print(data_frame)
     print(bbands)
+    print(bu)
+    print(bl)
     exit(11)
     print("\033[32mcn:%s\nbl:%s\n\033[0m" %(ln, bl))
     print("-------------")

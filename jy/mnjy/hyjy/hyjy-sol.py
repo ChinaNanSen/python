@@ -104,14 +104,18 @@ def trading_logic(data_frame, data_frames, position_opened):
     bbands = finta.TA.BBANDS(data_frame)
     bu = bbands.iloc[-1]['BB_UPPER']
     bl = bbands.iloc[-1]['BB_LOWER']
-    cn = data_frame['close'].iloc[0]
-    hn = data_frame['high'].iloc[0]
-    ln = data_frame['low'].iloc[0]
-    hns = data_frames['high'].iloc[0]
-    lns = data_frames['low'].iloc[0]
+    cn = data_frame['close'].iloc[-1]
+    hn = data_frame['high'].iloc[-1]
+    ln = data_frame['low'].iloc[-1]
+    
+    # print(data_frame)
+    # print(ln)
+    # print(hn)
+    # exit(112)
     print("\033[32mln:%s\nbl:%s\n\033[0m" %(lns, bl))
     print("-------------")
     print("\033[31mhn:%s\nbu:%s\n\033[0m" %(hns, bu))
+  
 
     if float(lns) < bl and  position_opened == False:
         print(position_opened)

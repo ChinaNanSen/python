@@ -93,7 +93,7 @@ def process_data(data_frame):
     data_frame['ts'] = data_frame['ts'].apply(
         lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
     data_frame['ts'] = data_frame['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    data_frame.set_index('ts', inplace=True)
+    # data_frame.set_index('ts', inplace=True)
     return data_frame
 
 def trading_logic(data_frame, position_opened):
@@ -102,25 +102,30 @@ def trading_logic(data_frame, position_opened):
     ma15 = finta.TA.SMA(data_frame, 15)
     ma150 = finta.TA.SMA(data_frame, 150)
     bbands = finta.TA.BBANDS(data_frame)
+    ich = finta.TA.ICHIMOKU(data_frame)
+    ic = ich.iloc[0]['CHIKOU']
+    
     bu = bbands.iloc[-1]['BB_UPPER']
     bl = bbands.iloc[-1]['BB_LOWER']
     cn = data_frame['close'].iloc[-1]
     hn = data_frame['high'].iloc[-1]
     ln = data_frame['low'].iloc[-1]
-    print(bbands)
-    print(ln)
-    print(hn)
-    exit(111)
+    # print(data_frame)
+    # print(ln)
+    # print(hn)
+    # 
     
     print("\033[32mln:%s\nbl:%s\n\033[0m" %(ln, bl))
     print("-------------")
     print("\033[31mhn:%s\nbu:%s\n\033[0m" %(hn, bu))
-
-    if float(ln) < bl and  position_opened == False:
+    # exit(111)
+    # if float(ln) < bl and  position_opened == False:
+    if float(ic) > bu and  position_opened == False:
         print(position_opened)
         print("\033[32m开始买入\033[0m")
         return "buy"
-    elif float(hn) > bu and position_opened:
+    # elif float(hn) > bu and position_opened:
+    elif float(ic) < bl and position_opened:
         print("\033[31m开始卖出\033[0m")
         return "sell"
     elif position_opened:    
@@ -157,7 +162,7 @@ def execute_trade(trade_type, order_id):
                 clOrdId="buy"+str(order_id),
                 ordType="market",  # market 市价单 ，limit 限价单
                 # px="34430",
-                sz="30"  # 买入100 USDT的BTC
+                sz="300"  # 买入100 USDT的BTC
             )
             print(result)
             # 更新持仓状态
