@@ -192,7 +192,7 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) > bl and position_opened == False:
+    if float(ln) < bl and position_opened == False:
     # if float(ln) < bl and position_opened:
 
         order_id = generate_order_id()
