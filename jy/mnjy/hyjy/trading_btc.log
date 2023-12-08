@@ -1,0 +1,262 @@
+2023-12-09 00:48:35,493 - INFO - []
+2023-12-09 00:48:37,896 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:38,436 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/balance?ccy=USDT "HTTP/2 200 OK"
+2023-12-09 00:48:38,840 - INFO - HTTP Request: POST https://www.okx.com/api/v5/trade/order "HTTP/2 200 OK"
+2023-12-09 00:48:38,989 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy41460 "HTTP/2 200 OK"
+2023-12-09 00:48:39,127 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy41460 "HTTP/2 200 OK"
+2023-12-09 00:48:39,266 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy41460 "HTTP/2 200 OK"
+2023-12-09 00:48:39,414 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy41460 "HTTP/2 200 OK"
+2023-12-09 00:48:39,569 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:39,716 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy41460 "HTTP/2 200 OK"
+2023-12-09 00:48:39,866 - INFO - HTTP Request: POST https://www.okx.com/api/v5/trade/close-position "HTTP/2 200 OK"
+2023-12-09 00:48:40,011 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell41460 "HTTP/2 200 OK"
+2023-12-09 00:48:40,174 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell41460 "HTTP/2 200 OK"
+2023-12-09 00:48:40,318 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell41460 "HTTP/2 200 OK"
+2023-12-09 00:48:40,461 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell41460 "HTTP/2 200 OK"
+2023-12-09 00:48:40,463 - INFO - [
+    {
+        "date": "2023-12-09 00:48:37",
+        "方向": "买",
+        "状态": false,
+        "订单ID": 41460,
+        "支出": 1233.844245505637,
+        "最低价": "43818.3",
+        "LB": 42960.05267333069,
+        "oid": "buy41460",
+        "成交价": "43808",
+        "资金费": "-6.5712"
+    },
+    {
+        "date": "2023-12-09 00:48:37",
+        "方向": "平仓",
+        "状态": true,
+        "订单ID": 41460,
+        "亏损": "-10.919999999998254",
+        "id": "sell41460",
+        "成交价": "43809.4",
+        "资金费": "-13.14282"
+    }
+]
+2023-12-09 00:48:42,612 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:42,896 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/balance?ccy=USDT "HTTP/2 200 OK"
+2023-12-09 00:48:43,054 - INFO - HTTP Request: POST https://www.okx.com/api/v5/trade/order "HTTP/2 200 OK"
+2023-12-09 00:48:43,200 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy17395 "HTTP/2 200 OK"
+2023-12-09 00:48:43,335 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy17395 "HTTP/2 200 OK"
+2023-12-09 00:48:43,473 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy17395 "HTTP/2 200 OK"
+2023-12-09 00:48:43,617 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy17395 "HTTP/2 200 OK"
+2023-12-09 00:48:43,763 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:43,765 - INFO - [
+    {
+        "date": "2023-12-09 00:48:42",
+        "方向": "买",
+        "状态": false,
+        "订单ID": 17395,
+        "支出": 1881.4787355056376,
+        "最低价": "43808",
+        "LB": 42961.07148672346,
+        "oid": "buy17395",
+        "成交价": "43811.9",
+        "资金费": "-6.571785"
+    }
+]
+2023-12-09 00:48:45,926 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:46,205 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:46,206 - INFO - []
+2023-12-09 00:48:48,362 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:48,638 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:48,640 - INFO - []
+2023-12-09 00:48:50,793 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:51,049 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:51,053 - INFO - []
+2023-12-09 00:48:53,207 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:53,484 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:53,485 - INFO - []
+2023-12-09 00:48:55,640 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:55,900 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:55,903 - INFO - []
+2023-12-09 00:48:58,041 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:48:58,320 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:48:58,322 - INFO - []
+2023-12-09 00:49:00,486 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:00,764 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:00,768 - INFO - []
+2023-12-09 00:49:02,901 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:03,183 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:03,186 - INFO - []
+2023-12-09 00:49:05,339 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:05,640 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:05,643 - INFO - []
+2023-12-09 00:49:07,792 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:08,070 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:08,072 - INFO - []
+2023-12-09 00:49:10,223 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:10,490 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:10,492 - INFO - []
+2023-12-09 00:49:12,638 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:12,901 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:12,904 - INFO - []
+2023-12-09 00:49:15,083 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:15,330 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:15,332 - INFO - []
+2023-12-09 00:49:17,519 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:17,786 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:17,789 - INFO - []
+2023-12-09 00:49:19,938 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:20,215 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:20,217 - INFO - []
+2023-12-09 00:49:22,379 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:22,648 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:22,650 - INFO - []
+2023-12-09 00:49:24,800 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:25,055 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:25,058 - INFO - []
+2023-12-09 00:49:27,207 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:27,467 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:27,470 - INFO - []
+2023-12-09 00:49:29,605 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:29,877 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:29,878 - INFO - []
+2023-12-09 00:49:32,027 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:32,279 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:32,282 - INFO - []
+2023-12-09 00:49:34,431 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:34,678 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:34,682 - INFO - []
+2023-12-09 00:49:36,823 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:37,087 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:37,088 - INFO - []
+2023-12-09 00:49:39,233 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:39,512 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:39,515 - INFO - []
+2023-12-09 00:49:41,661 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:41,948 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:41,950 - INFO - []
+2023-12-09 00:49:44,102 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:44,457 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:44,458 - INFO - []
+2023-12-09 00:49:46,603 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:46,877 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:46,879 - INFO - []
+2023-12-09 00:49:49,030 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:49,278 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:49,278 - INFO - []
+2023-12-09 00:49:51,420 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:51,729 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:51,731 - INFO - []
+2023-12-09 00:49:53,901 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:54,175 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:54,178 - INFO - []
+2023-12-09 00:49:56,337 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:56,596 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:56,598 - INFO - []
+2023-12-09 00:49:58,744 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:49:59,055 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:49:59,057 - INFO - []
+2023-12-09 00:50:01,210 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:01,487 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:01,490 - INFO - []
+2023-12-09 00:50:03,630 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:03,912 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:03,916 - INFO - []
+2023-12-09 00:50:06,105 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:06,393 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:06,396 - INFO - []
+2023-12-09 00:50:08,539 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:08,816 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:08,819 - INFO - []
+2023-12-09 00:50:10,973 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:11,278 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:11,281 - INFO - []
+2023-12-09 00:50:13,434 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:13,711 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:13,713 - INFO - []
+2023-12-09 00:50:15,860 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:16,116 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:16,116 - INFO - []
+2023-12-09 00:50:18,274 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:18,529 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:18,530 - INFO - []
+2023-12-09 00:50:20,688 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:20,958 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:21,679 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy17395 "HTTP/2 200 OK"
+2023-12-09 00:50:21,969 - INFO - HTTP Request: POST https://www.okx.com/api/v5/trade/close-position "HTTP/2 200 OK"
+2023-12-09 00:50:22,162 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell17395 "HTTP/2 200 OK"
+2023-12-09 00:50:22,366 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell17395 "HTTP/2 200 OK"
+2023-12-09 00:50:22,562 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell17395 "HTTP/2 200 OK"
+2023-12-09 00:50:22,761 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=sell17395 "HTTP/2 200 OK"
+2023-12-09 00:50:22,765 - INFO - [
+    {
+        "date": "2023-12-09 00:50:20",
+        "方向": "平仓",
+        "状态": true,
+        "订单ID": 17395,
+        "亏损": "-9.540000000000873",
+        "id": "sell17395",
+        "成交价": "43777.2",
+        "资金费": "-6.56658"
+    }
+]
+2023-12-09 00:50:24,915 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:25,302 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/balance?ccy=USDT "HTTP/2 200 OK"
+2023-12-09 00:50:25,649 - INFO - HTTP Request: POST https://www.okx.com/api/v5/trade/order "HTTP/2 200 OK"
+2023-12-09 00:50:26,272 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy72726 "HTTP/2 200 OK"
+2023-12-09 00:50:26,491 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy72726 "HTTP/2 200 OK"
+2023-12-09 00:50:26,698 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy72726 "HTTP/2 200 OK"
+2023-12-09 00:50:26,898 - INFO - HTTP Request: GET https://www.okx.com/api/v5/trade/order?instId=BTC-USDT-SWAP&clOrdId=buy72726 "HTTP/2 200 OK"
+2023-12-09 00:50:27,082 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:27,085 - INFO - [
+    {
+        "date": "2023-12-09 00:50:24",
+        "方向": "买",
+        "状态": false,
+        "订单ID": 72726,
+        "支出": 1868.2045530056373,
+        "最低价": "43785.2",
+        "LB": 42962.01415489225,
+        "oid": "buy72726",
+        "成交价": "43781",
+        "资金费": "-6.56715"
+    }
+]
+2023-12-09 00:50:29,226 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:29,532 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:29,534 - INFO - []
+2023-12-09 00:50:31,710 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:31,988 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:31,990 - INFO - []
+2023-12-09 00:50:34,131 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:34,403 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:34,404 - INFO - []
+2023-12-09 00:50:36,557 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:36,824 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:36,827 - INFO - []
+2023-12-09 00:50:38,972 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:39,261 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:39,261 - INFO - []
+2023-12-09 00:50:41,415 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:41,701 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:41,702 - INFO - []
+2023-12-09 00:50:43,851 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:44,119 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:44,120 - INFO - []
+2023-12-09 00:50:46,272 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:46,690 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:46,692 - INFO - []
+2023-12-09 00:50:48,853 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:49,135 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:49,137 - INFO - []
+2023-12-09 00:50:51,282 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:51,526 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:51,527 - INFO - []
+2023-12-09 00:50:53,705 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:53,960 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:53,963 - INFO - []
+2023-12-09 00:50:56,108 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:56,380 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:56,382 - INFO - []
+2023-12-09 00:50:58,535 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:50:58,808 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:50:58,810 - INFO - []
+2023-12-09 00:51:00,969 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=160 "HTTP/2 200 OK"
+2023-12-09 00:51:01,240 - INFO - HTTP Request: GET https://www.okx.com/api/v5/account/positions?instType=SWAP&instId=BTC-USDT-SWAP "HTTP/2 200 OK"
+2023-12-09 00:51:01,242 - INFO - []

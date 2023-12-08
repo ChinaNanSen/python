@@ -4,6 +4,7 @@ import okx.MarketData as MarketData
 import pandas as pd
 import datetime
 import matplotlib.pyplot as plt
+import logging
 import json
 import time
 import finta
@@ -57,6 +58,25 @@ def positions():
         instId=bz
     )
     return result
+
+
+
+
+# 配置日志
+logging.basicConfig(filename='trading_btc.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
+
+def log_dictionary(dict_data):
+    """
+    记录字典内容到日志文件中，确保中文字符可读
+    """
+    try:
+        # 将字典转换为 JSON 字符串，并确保中文字符被正确解码
+        dict_as_string = json.dumps(dict_data, indent=4, ensure_ascii=False)
+        # 将字符串写入日志
+        logging.info(dict_as_string)
+    except Exception as e:
+        logging.error(f"Error logging dictionary: {e}")
+
 
 def account(cb):
     for attempt in range(3):  # 尝试次数
@@ -233,7 +253,7 @@ def jy():
             bsx = getOrder(oid)['data'][0]['fee']
             
             info['oid'] = "buy"+str(order_id)
-            oidict['成交价'] = bcj
+            info['成交价'] = bcj
             info['资金费'] = bsx
             dd.append(info)
             # print(dd)
@@ -304,7 +324,7 @@ def jy():
     if position_opened:
         print(position_opened)
         pos_data = positions()['data'][0]
-        if float(pos_data['upl']) <= -10:
+        if float(pos_data['upl']) <= -9:
             print("\033[31m亏损超过11U,平仓\033[0m")
             print(order_id)
             print("==========")
@@ -362,18 +382,16 @@ def jy():
 
 
 if __name__ == "__main__":
-    dd = []
-    
+    dd = []  
     position_opened = False
     while True:
         # print(dd)
         # 将交易记录输出到文件
-        trades_df = pd.DataFrame(dd)
-        trades_df.to_csv('trading_btc.csv', index=False)
+        log_dictionary(dd)
+        dd.clear()
         time.sleep(2)
         jy()
         print(position_opened)
         
-        # dd = []
         
         
