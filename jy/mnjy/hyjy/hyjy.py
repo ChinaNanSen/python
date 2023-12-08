@@ -150,9 +150,9 @@ def jy():
 
     # print("%s\n%s\n" %
     #       (ma15.iloc[15], ma150.iloc[150]))
-    print("cn:%s\nbl:%s\n" %(cn, bl))
+    print("ln:%s\nbl:%s\n" %(ln, bl))
     print("-------------")
-    print("cn:%s\nbu:%s\n" %(cn, bu))
+    print("hn:%s\nbu:%s\n" %(hn, bu))
 
 
     # 检查交叉点并执行交易逻辑
@@ -179,7 +179,15 @@ def jy():
         print(position_opened)
         # exit(1023)
         print(cb)
-
+        info = {}
+        info['date'] = data1['ts']
+        info['方向'] = "买"
+        info['状态'] = position_opened
+        info['订单ID'] = order_id
+        info['支出'] = cb
+        info['最低价'] = ln
+        info['LB'] = bl
+        dd.append(info)
         # exit(1036)
         if float(cb) >= 100:
 
@@ -212,13 +220,14 @@ def jy():
             bcj = getOrder(oid)['data'][0]['fillPx']
             # 订单手续费
             bsx = getOrder(oid)['data'][0]['fee']
+            oidict['date'] = data1['ts']
             oidict['oid'] = "buy"+str(order_id)
             oidict['bye'] = bye
             oidict['bxf'] = bxf
             oidict['bcj'] = bcj
             oidict['bsx'] = bsx
             dd.append(oidict)
-            print(dd)
+            # print(dd)
 
             buy_signals[data1.index[15]] = data1['close'].iloc[15]
             print("\033[32m++++hit++buy\033[0m")
@@ -230,6 +239,15 @@ def jy():
         print("\033[31m开始卖出\033[0m")
         print("++++++++++")
         print(order_id)
+        info = {}
+        info['date'] = data1['ts']
+        info['方向'] = "卖"
+        info['状态'] = position_opened
+        info['订单ID'] = order_id
+        # info['支出'] = cb
+        info['最高价'] = hn
+        info['UB'] = bu
+        dd.append(info)
         # 卖出信号
         try:
             byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
@@ -259,6 +277,7 @@ def jy():
             ucj = getOrder(uoid)['data'][0]['fillPx']
             # 订单手续费
             usx = getOrder(uoid)['data'][0]['fee']
+            oidict['date'] = data1['ts']
             oidict['uoid'] = "sell"+str(order_id)
             oidict['ubye'] = uye
             oidict['ubxf'] = uxf
@@ -282,6 +301,13 @@ def jy():
             print("\033[31m亏损超过11U,平仓\033[0m")
             print(order_id)
             print("==========")
+            info = {}
+            info['date'] = data1['ts']
+            info['方向'] = "平仓"
+            info['状态'] = position_opened
+            info['订单ID'] = order_id
+            info['亏损'] = pos_data['upl']
+            dd.append(info)
             # 卖出信号
             try:
                 byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
@@ -312,6 +338,7 @@ def jy():
                 ucj = getOrder(uoid)['data'][0]['fillPx']
                 # 订单手续费
                 usx = getOrder(uoid)['data'][0]['fee']
+                oidict['date'] = data1['ts']
                 oidict['uoid'] = "sell"+str(order_id)
                 oidict['ubye'] = uye
                 oidict['ubxf'] = uxf
@@ -329,9 +356,10 @@ def jy():
 
 
 if __name__ == "__main__":
-    dd = []
+    
     position_opened = False
     while True:
+        dd = []
         time.sleep(2)
         jy()
         print(position_opened)
