@@ -125,19 +125,9 @@ def jy():
 
    # 获取当前时间的 Unix 时间戳
     timestamp = time.time()
-    print("当前时间的 Unix 时间戳：", timestamp)
-
-    # 将 Unix 时间戳转换为本地时间
     local_time = time.localtime(timestamp)
-    print("本地时间：", local_time)
-
-    # 将本地时间转换为可读的字符串格式
     nows = time.asctime(local_time)
-    # print("可读的时间格式：", readable_time)
-    # 使用 time.strptime 转换时间字符串为时间元组
     time_tuple = time.strptime(nows, "%a %b %d %H:%M:%S %Y")
-
-    # 使用 time.strftime 将时间元组转换为指定格式的字符串
     now = time.strftime("%Y-%m-%d %H:%M:%S", time_tuple)
 
         
@@ -182,7 +172,7 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) > bl and position_opened == False:
+    if float(ln) < bl and position_opened == False:
     # if float(ln) < bl and position_opened:
 
         order_id = generate_order_id()
