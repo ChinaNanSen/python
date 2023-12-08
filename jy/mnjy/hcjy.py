@@ -158,19 +158,19 @@ mal = finta.TA.SMA(data1, 150)
 mas = finta.TA.SMA(data1, 15)
 ma = finta.TA.SMA(data1, 60)
 
-data1['mal'] = mal.iloc[-1]
-data1['mas'] = mas.iloc[-1]
-data1['ma'] = ma.iloc[-1]
+# data1['mal'] = mal.iloc[-1]
+# data1['mas'] = mas.iloc[-1]
+# data1['ma'] = ma.iloc[-1]
 
 sar = finta.TA.SAR(data1)
 # print(sar.iloc[0])
 # exit(112)
-data1['emal'] = finta.TA.EMA(data1, 150)
-data1['emas'] = finta.TA.EMA(data1, 15)
-data1['rsi'] = finta.TA.RSI(data1)
+# data1['emal'] = finta.TA.EMA(data1, 150)
+# data1['emas'] = finta.TA.EMA(data1, 15)
+# data1['rsi'] = finta.TA.RSI(data1)
 macd = finta.TA.MACD(data1)
-data1['macd'] = macd.iloc[-1]['MACD']
-data1['sig'] = macd.iloc[-1]['SIGNAL']
+# data1['macd'] = macd.iloc[-1]['MACD']
+# data1['sig'] = macd.iloc[-1]['SIGNAL']
 # bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
 data1['bu'] = bbands.iloc[-27]['BB_UPPER']
@@ -179,6 +179,7 @@ data1['bl'] = bbands.iloc[-27]['BB_LOWER']
 cn = data1['close'].iloc[0]
 hn = data1['high'].iloc[0]
 ln = data1['low'].iloc[0]
+print(data1)
 ich = finta.TA.ICHIMOKU(data1)
 data1['ic'] = ich.iloc[-27]['CHIKOU']
 
@@ -218,6 +219,8 @@ total_commission = 0  # 总手续费
 
 # 记录交易
 trades = []
+# print(data1)
+exit(112)
 
 # 回测逻辑
 for index, row in data1.iterrows():

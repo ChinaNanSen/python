@@ -28,11 +28,6 @@ bz = "BTC-USDT-SWAP"
 dbz = "BTC"
 
 
-# 设置字体
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 指定默认字体为黑体
-plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
-
-
 def getOrder(oid):
     result = tradeAPI.get_order(
         instId=bz,
@@ -114,32 +109,7 @@ confirm	String	K线状态
 
 print("\033[34m~~~~~starting jy %s\033[0m" % dbz)
 
-'''
-def plot_data(data, ma15, ma150, buy_signals, sell_signals):
-    plt.figure(figsize=(12, 6))
 
-    # 绘制收盘价格
-    plt.plot(data.index, data['close'], label='价格', alpha=0.5)
-
-    # 绘制移动平均线
-    plt.plot(ma15.index, ma15, label='15周期简单移动平均线', alpha=0.9)
-    plt.plot(ma150.index, ma150, label='150周期简单移动平均线', alpha=0.9)
-
-    # 绘制买卖信号
-    for date, price in buy_signals.items():
-        plt.plot(date, price, 'o', markersize=10, label='买信号' if date ==
-                 list(buy_signals.keys())[0] else "", color='g')
-    for date, price in sell_signals.items():
-        plt.plot(date, price, 'o', markersize=10, label='卖信号' if date ==
-                 list(sell_signals.keys())[0] else "", color='r')
-
-    plt.legend(loc='best')
-    plt.title('价格、移动平均线和买卖信号')
-    plt.xlabel('日期')
-    plt.ylabel('价格')
-    plt.grid()
-    plt.show()
-'''
 
 def jy():
 
