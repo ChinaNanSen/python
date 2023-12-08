@@ -363,3 +363,6 @@ if __name__ == "__main__":
         time.sleep(2)
         jy()
         print(position_opened)
+        # 将交易记录输出到文件
+        trades_df = pd.DataFrame(dd)
+        trades_df.to_csv('trading_record.csv', index=False)
