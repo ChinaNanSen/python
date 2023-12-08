@@ -9,6 +9,8 @@ import time
 import finta
 import configparser
 import random
+# from datetime import *
+
 
 # API 初始化
 # 从配置文件读取API初始化信息
@@ -119,6 +121,24 @@ def jy():
     
     # print(getOrder('641999281087422464'))
     # exit(1006)
+  
+
+   # 获取当前时间的 Unix 时间戳
+    timestamp = time.time()
+    print("当前时间的 Unix 时间戳：", timestamp)
+
+    # 将 Unix 时间戳转换为本地时间
+    local_time = time.localtime(timestamp)
+    print("本地时间：", local_time)
+
+    # 将本地时间转换为可读的字符串格式
+    nows = time.asctime(local_time)
+    # print("可读的时间格式：", readable_time)
+    # 使用 time.strptime 转换时间字符串为时间元组
+    time_tuple = time.strptime(nows, "%a %b %d %H:%M:%S %Y")
+
+    # 使用 time.strftime 将时间元组转换为指定格式的字符串
+    now = time.strftime("%Y-%m-%d %H:%M:%S", time_tuple)
 
         
     # 获取历史数据
@@ -162,7 +182,7 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) < bl and position_opened == False:
+    if float(ln) > bl and position_opened == False:
     # if float(ln) < bl and position_opened:
 
         order_id = generate_order_id()
@@ -172,6 +192,7 @@ def jy():
         # 买入信号
         
         ye = account("USDT")
+        
 
         ccb = ye["details"][0]["availBal"]
         cb = float(ccb) / 2
@@ -180,14 +201,14 @@ def jy():
         # exit(1023)
         print(cb)
         info = {}
-        info['date'] = data1['ts']
+        info['date'] = now
         info['方向'] = "买"
         info['状态'] = position_opened
         info['订单ID'] = order_id
         info['支出'] = cb
         info['最低价'] = ln
         info['LB'] = bl
-        dd.append(info)
+       
         # exit(1036)
         if float(cb) >= 100:
 
@@ -220,13 +241,11 @@ def jy():
             bcj = getOrder(oid)['data'][0]['fillPx']
             # 订单手续费
             bsx = getOrder(oid)['data'][0]['fee']
-            oidict['date'] = data1['ts']
-            oidict['oid'] = "buy"+str(order_id)
-            oidict['bye'] = bye
-            oidict['bxf'] = bxf
-            oidict['bcj'] = bcj
-            oidict['bsx'] = bsx
-            dd.append(oidict)
+            
+            info['oid'] = "buy"+str(order_id)
+            oidict['成交价'] = bcj
+            info['资金费'] = bsx
+            dd.append(info)
             # print(dd)
 
             buy_signals[data1.index[15]] = data1['close'].iloc[15]
@@ -240,14 +259,14 @@ def jy():
         print("++++++++++")
         print(order_id)
         info = {}
-        info['date'] = data1['ts']
+        info['date'] = now
         info['方向'] = "卖"
         info['状态'] = position_opened
         info['订单ID'] = order_id
         # info['支出'] = cb
         info['最高价'] = hn
         info['UB'] = bu
-        dd.append(info)
+    
         # 卖出信号
         try:
             byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
@@ -277,13 +296,11 @@ def jy():
             ucj = getOrder(uoid)['data'][0]['fillPx']
             # 订单手续费
             usx = getOrder(uoid)['data'][0]['fee']
-            oidict['date'] = data1['ts']
-            oidict['uoid'] = "sell"+str(order_id)
-            oidict['ubye'] = uye
-            oidict['ubxf'] = uxf
-            oidict['ubcj'] = ucj
-            oidict['ubsx'] = usx
-            dd.append(oidict)
+            
+            info['uoid'] = "sell"+str(order_id)
+            info['成交价'] = ucj
+            info['资金费'] = usx
+            dd.append(info)
 
             sell_signals[data1.index[15]] = data1['close'].iloc[15]
             print("\033[32m---hit-----sell\033[0m")
@@ -302,12 +319,12 @@ def jy():
             print(order_id)
             print("==========")
             info = {}
-            info['date'] = data1['ts']
+            info['date'] = now
             info['方向'] = "平仓"
             info['状态'] = position_opened
             info['订单ID'] = order_id
             info['亏损'] = pos_data['upl']
-            dd.append(info)
+            
             # 卖出信号
             try:
                 byex = getOrder("buy"+str(order_id))['data'][0]['fillSz']
@@ -328,6 +345,7 @@ def jy():
                 
                 position_opened = False
                 
+                
                 uoid = uresult['data'][0]['clOrdId']
                 print(uoid)
                 # 订单币币余额
@@ -338,14 +356,12 @@ def jy():
                 ucj = getOrder(uoid)['data'][0]['fillPx']
                 # 订单手续费
                 usx = getOrder(uoid)['data'][0]['fee']
-                oidict['date'] = data1['ts']
-                oidict['uoid'] = "sell"+str(order_id)
-                oidict['ubye'] = uye
-                oidict['ubxf'] = uxf
-                oidict['ubcj'] = ucj
-                oidict['ubsx'] = usx
-                dd.append(oidict)
-            
+               
+                info['id'] = "sell"+str(order_id)
+                info['成交价'] = ucj
+                info['资金费'] = usx
+                dd.append(info)
+               
 
                 sell_signals[data1.index[15]] = data1['close'].iloc[15]
                 print("\033[32m---hit-----sell\033[0m")
@@ -356,13 +372,18 @@ def jy():
 
 
 if __name__ == "__main__":
+    dd = []
     
     position_opened = False
     while True:
-        dd = []
+        # print(dd)
+        # 将交易记录输出到文件
+        trades_df = pd.DataFrame(dd)
+        trades_df.to_csv('trading_btc.csv', index=False)
         time.sleep(2)
         jy()
         print(position_opened)
-        # 将交易记录输出到文件
-        trades_df = pd.DataFrame(dd)
-        trades_df.to_csv('trading_record.csv', index=False)
+        
+        # dd = []
+        
+        
