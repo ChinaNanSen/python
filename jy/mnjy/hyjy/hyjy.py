@@ -211,6 +211,7 @@ def jy():
         # exit(1023)
         print(cb)
         info = {}
+        info['币种'] = dbz 
         info['date'] = now
         info['方向'] = "买"
         info['状态'] = position_opened
@@ -269,6 +270,7 @@ def jy():
         print("++++++++++")
         print(order_id)
         info = {}
+        info['币种'] = dbz
         info['date'] = now
         info['方向'] = "卖"
         info['状态'] = position_opened
@@ -329,6 +331,7 @@ def jy():
             print(order_id)
             print("==========")
             info = {}
+            info['币种'] = dbz
             info['date'] = now
             info['方向'] = "平仓"
             info['状态'] = position_opened

@@ -192,7 +192,7 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) < bl and position_opened == False:
+    if float(ln) > bl and position_opened == False:
     # if float(ln) < bl and position_opened:
 
         order_id = generate_order_id()
@@ -211,6 +211,7 @@ def jy():
         # exit(1023)
         print(cb)
         info = {}
+        info['币种'] = dbz
         info['date'] = now
         info['方向'] = "买"
         info['状态'] = position_opened
@@ -269,6 +270,7 @@ def jy():
         print("++++++++++")
         print(order_id)
         info = {}
+        info['币种'] = dbz
         info['date'] = now
         info['方向'] = "卖"
         info['状态'] = position_opened
@@ -329,6 +331,7 @@ def jy():
             print(order_id)
             print("==========")
             info = {}
+            info['币种'] = dbz
             info['date'] = now
             info['方向'] = "平仓"
             info['状态'] = position_opened
