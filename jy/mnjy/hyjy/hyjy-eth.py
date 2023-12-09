@@ -192,7 +192,8 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) < bl and position_opened == False:
+    cz = bl - float(ln)
+    if float(ln) < bl and  cz > 10 and position_opened == False:
     # if float(ln) < bl and position_opened:
 
         order_id = generate_order_id()
@@ -265,7 +266,8 @@ def jy():
             print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
     # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
-    if float(hn) > bu and position_opened :
+    zc = float(hn) - bu
+    if float(hn) > bu and zc > 5 and position_opened:
         print("\033[31m开始卖出\033[0m")
         print("++++++++++")
         print(order_id)
