@@ -184,6 +184,7 @@ def jy():
 
     # print("%s\n%s\n" %
     #       (ma15.iloc[15], ma150.iloc[150]))
+    print("ma150: ",ma)
     print("ln:%s\nbl:%s\n" %(ln, bl))
     print("-------------")
     print("hn:%s\nbu:%s\n" %(hn, bu))
