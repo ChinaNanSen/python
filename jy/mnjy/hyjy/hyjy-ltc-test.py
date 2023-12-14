@@ -27,8 +27,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "TRX-USDT-SWAP"
-dbz = "TRX"
+bz = "BTC-USDT-SWAP"
+dbz = "BTC"
 
 def getOrder(oid):
     # 获取订单详情
@@ -100,17 +100,40 @@ def trading_logic(data_frame, position_opened):
     # 交易逻辑
     ma15 = finta.TA.SMA(data_frame, 15)
     ma150 = finta.TA.SMA(data_frame, 150)
+    ema150 = finta.TA.EMA(data_frame, 150)
     bbands = finta.TA.BBANDS(data_frame)
     bu = bbands.iloc[-1]['BB_UPPER']
+    icbu = bbands.iloc[43]['BB_UPPER']
     bl = bbands.iloc[-1]['BB_LOWER']
+    icbl = bbands.iloc[43]['BB_LOWER']
     cn = data_frame['close'].iloc[0]
+    on = data_frame['open'].iloc[0]
     hn = data_frame['high'].iloc[0]
     ln = data_frame['low'].iloc[0]
-    print("\033[32mcn:%s\nbl:%s\n\033[0m" %(ln, bl))
+    ich = finta.TA.ICHIMOKU(data_frame)
+    ic = ich.iloc[0]['CHIKOU']
+    # print(ich['CHIKOU'].head(60))
+    # ic = ich.iloc[0]['CHIKOU']
+    # print(type(ic))
+    ma = ma150.iloc[149]
+    # print(ema150)
+    
+    print("\033[32mln:%s\nbl:%s\n\033[0m" %(ln, bl))
+    # print("\033[32mcn:%s\nbl:%s\n\033[0m" %(on, ic))
     print("-------------")
-    print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
-
-    if float(ln) < bl and  position_opened == False:
+    print("\033[31mhn:%s\nbu:%s\n\033[0m" %(hn, bu))
+    # print("\033[31mcn:%s\nbu:%s\n\033[0m" %(cn, ic))
+    # print(ich.iloc[0]['CHIKOU'])
+    # print(data_frame)
+    # # # print(ich.head(60))
+    # print(bbands.head(50))
+    # print(icbl)
+    # print(icbu)
+    # exit(111)
+    if float(cn) > ma and float(ln) < bl and  position_opened == False:
+    # oc = float(ic) - float(on)
+    # cc = float(cn) - float(ic)
+    # if float(on) < float(ic) and oc > 10 and position_opened == False:
         print(position_opened)
         print("\033[32m开始买入\033[0m")
         return "buy"
