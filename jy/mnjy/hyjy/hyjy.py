@@ -30,6 +30,8 @@ bz = "BTC-USDT-SWAP"
 dbz = "BTC"
 
 
+
+
 def getOrder(oid):
     result = tradeAPI.get_order(
         instId=bz,
@@ -65,7 +67,7 @@ def positions():
 
 
 # 配置日志
-logging.basicConfig(filename='trading_btc.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
+logging.basicConfig(filename='trading_btc.log', level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
 
 def log_dictionary(dict_data):
     """
@@ -185,6 +187,7 @@ def jy():
     # print("%s\n%s\n" %
     #       (ma15.iloc[15], ma150.iloc[150]))
     print("ma150: ",ma)
+    print("cn: ",cn)
     print("ln:%s\nbl:%s\n" %(ln, bl))
     print("-------------")
     print("hn:%s\nbu:%s\n" %(hn, bu))
@@ -197,7 +200,8 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    cz = bl - float(ln)
+    cz = float(bl) - float(ln)
+    print("cz: ",cz)
     if float(cn) > ma and float(ln) < bl and  cz > 10 and position_opened == False:
 
     # if float(ln) < bl and position_opened:
@@ -273,7 +277,8 @@ def jy():
             print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
     # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
-    zc = float(hn) - bu
+    zc = float(hn) - float(bu)
+    print("zc: ",zc)
     if float(hn) > bu and zc > 5 and position_opened:
         print("\033[31m开始卖出\033[0m")
         print("++++++++++")
