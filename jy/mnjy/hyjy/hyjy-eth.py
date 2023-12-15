@@ -370,7 +370,7 @@ def jy():
                     posSide="long",
                     mgnMode="cross"
                 )
-                time.sleep(0.1)
+                
                 print(uresult)
                 
                 position_opened = False
@@ -395,6 +395,7 @@ def jy():
 
                 sell_signals[data1.index[15]] = data1['close'].iloc[15]
                 print("\033[32m---hit-----sell\033[0m")
+                time.sleep(240)
 
             else:
                 print("\033[31msell操作忽略,BTC余额不足\033[0m")
