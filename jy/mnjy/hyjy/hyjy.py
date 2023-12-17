@@ -3,7 +3,6 @@ import okx.Trade as Trade
 import okx.MarketData as MarketData
 import pandas as pd
 import datetime
-import matplotlib.pyplot as plt
 import logging
 import json
 import time
@@ -31,12 +30,15 @@ bz = "BTC-USDT-SWAP"
 dbz = "BTC"
 
 
+
+
 def getOrder(oid):
     result = tradeAPI.get_order(
         instId=bz,
         # ordId=oid,
         clOrdId=oid
     )
+    time.sleep(0.1)
     return result
 
 
@@ -50,6 +52,7 @@ def tradedata():
         instType="SPOT",
         ordType="market,post_only,fok,ioc"
     )
+    time.sleep(0.1)
     return result
 
 def positions():
@@ -57,13 +60,14 @@ def positions():
         instType="SWAP",
         instId=bz
     )
+    time.sleep(0.1)
     return result
 
 
 
 
 # 配置日志
-logging.basicConfig(filename='trading_btc.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
+logging.basicConfig(filename='trading_btc.log', level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
 
 def log_dictionary(dict_data):
     """
@@ -84,6 +88,7 @@ def account(cb):
             result = accountAPI.get_account_balance(
                 ccy=cb
             )
+            time.sleep(0.1)
             return result["data"][0]
         except Exception as e:
             print(f"Error: {e}")
@@ -170,6 +175,7 @@ def jy():
     ma15 = finta.TA.SMA(data1, 15)
     ma150 = finta.TA.SMA(data1, 150)
     bmacd = finta.TA.MACD(data1)
+    ma = ma150.iloc[149]
     bbands = finta.TA.BBANDS(data1)
     bu = bbands.iloc[19]['BB_UPPER']
     bm = bbands.iloc[19]['BB_MIDDLE']
@@ -180,6 +186,8 @@ def jy():
 
     # print("%s\n%s\n" %
     #       (ma15.iloc[15], ma150.iloc[150]))
+    print("ma150: ",ma)
+    print("cn: ",cn)
     print("ln:%s\nbl:%s\n" %(ln, bl))
     print("-------------")
     print("hn:%s\nbu:%s\n" %(hn, bu))
@@ -192,7 +200,10 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) < bl and position_opened == False:
+    cz = float(bl) - float(ln)
+    print("cz: ",cz)
+    if float(cn) > ma and float(ln) < bl and  cz > 10 and position_opened == False:
+
     # if float(ln) < bl and position_opened:
 
         order_id = generate_order_id()
@@ -236,6 +247,7 @@ def jy():
                 # px="34430",
                 sz="300"  # 买入100 USDT的BTC
             )
+            time.sleep(0.1)
             print(result)
             # 更新持仓状态
             position_opened = True
@@ -265,7 +277,9 @@ def jy():
             print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
     # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
-    if float(hn) > bu and position_opened :
+    zc = float(hn) - float(bu)
+    print("zc: ",zc)
+    if float(hn) > bu and zc > 5 and position_opened:
         print("\033[31m开始卖出\033[0m")
         print("++++++++++")
         print(order_id)
@@ -295,6 +309,7 @@ def jy():
                 posSide="long",
                 mgnMode="cross"
             )
+            time.sleep(0.1)
             print(uresult)
 
             position_opened = False
@@ -354,9 +369,10 @@ def jy():
                     posSide="long",
                     mgnMode="cross"
                 )
+                time.sleep(0.1)
                 print(uresult)
-                
                 position_opened = False
+                
                 
                 
                 uoid = uresult['data'][0]['clOrdId']
@@ -378,6 +394,7 @@ def jy():
 
                 sell_signals[data1.index[15]] = data1['close'].iloc[15]
                 print("\033[32m---hit-----sell\033[0m")
+                time.sleep(240)
 
             else:
                 print("\033[31msell操作忽略,BTC余额不足\033[0m")
@@ -392,16 +409,19 @@ if __name__ == "__main__":
         # 将交易记录输出到文件
         log_dictionary(dd)
         dd.clear()
-        time.sleep(2)
+        time.sleep(4)
         for attempt in range(3):  # 尝试次数
             try:
                 jy()
             except Exception as e:
-                print(f"Error: {e}")
-            if attempt < 2:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
-                time.sleep(2)
-            else:
-                print("Failed to execute trading logic after 3 attempts.")
+                print(f"Error timeout: {e}")
+                if attempt < 4:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
+                    time.sleep(2)
+                else:
+                    print("Failed to execute trading logic after 3 attempts.")
+                    exit(113)
+                
+        time.sleep(0.1)
         print(position_opened)
         
         

@@ -47,12 +47,12 @@ def get_monthly_historical_data():
     exchange = ccxt.okx()
 
     # 设置交易对和时间框架
-    symbol = 'SOL/USDT'  # 比特币与USDT的交易对
+    symbol = 'BTC/USDT'  # 比特币与USDT的交易对
     timeframe = '30m'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2023-11-01 00:00:00'
-    end_str = '2023-12-08 00:00:00'
+    start_str = '2023-11-28 00:00:00'
+    end_str = '2023-12-10 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
     start_ts = int(datetime.strptime(start_str, '%Y-%m-%d %H:%M:%S').timestamp() * 1000)
@@ -158,15 +158,15 @@ mal = finta.TA.SMA(data1, 150)
 mas = finta.TA.SMA(data1, 15)
 ma = finta.TA.SMA(data1, 60)
 
-# data1['mal'] = mal.iloc[-1]
-# data1['mas'] = mas.iloc[-1]
-# data1['ma'] = ma.iloc[-1]
+data1['mal'] = mal.iloc[-1]
+data1['mas'] = mas.iloc[-1]
+data1['ma'] = ma.iloc[-1]
 
 sar = finta.TA.SAR(data1)
 # print(sar.iloc[0])
 # exit(112)
-# data1['emal'] = finta.TA.EMA(data1, 150)
-# data1['emas'] = finta.TA.EMA(data1, 15)
+data1['emal'] = finta.TA.EMA(data1, 150)
+data1['emas'] = finta.TA.EMA(data1, 15)
 # data1['rsi'] = finta.TA.RSI(data1)
 macd = finta.TA.MACD(data1)
 # data1['macd'] = macd.iloc[-1]['MACD']
@@ -181,11 +181,9 @@ data1['bl'] = bbands.iloc[-27]['BB_LOWER']
 cn = data1['close'].iloc[0]
 hn = data1['high'].iloc[0]
 ln = data1['low'].iloc[0]
-# print(data1)
+print(data1)
 ich = finta.TA.ICHIMOKU(data1)
-print(ich['CHIKOU'])
 data1['ic'] = ich.iloc[-27]['CHIKOU']
-# print(data1['ic'].iloc[-1])
 
 # # print(ich)
 # print(data1['ic'])
@@ -223,14 +221,13 @@ total_commission = 0  # 总手续费
 
 # 记录交易
 trades = []
-# print(data1["bu"])
-# exit(112)
+# print(data1)
+exit(112)
 
 # 回测逻辑
 for index, row in data1.iterrows():
-    print(row['bu'])
-    # if pd.isna(row['emas']) or pd.isna(row['emal']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
-    if  pd.isna(row['ic']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
+    # print(row['ts'])
+    if pd.isna(row['emas']) or pd.isna(row['emal']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
         continue
 
    
@@ -240,17 +237,17 @@ for index, row in data1.iterrows():
 
     # 检查买入信号
     
-    # print(row['ic'])
+    print(row)
     # exit(1)
     # print(row['ic'])
     # print(row['bl'])
 
-    # if row['mas'] > row['mal'] and balance > 0:
-    # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
+    if row['mas'] > row['mal'] and balance > 0:
+    # if row['emas'] > row['emal'] and balance > 0:
     # if row['close'] < row['bl'] and balance > 0:
     # if row['close'] > row['ma'] and balance > 0:
     # if row['low'] < row['bl'] and balance > 0:
-    if row['ic'] < row['bl'] and balance > 0:
+    # if row['emal'] < row['close'] and row['low'] < row['bl'] and balance > 0:
         amount = balance / lprice
         # amount = balance / price
         fee = amount * lprice * commission_rate
@@ -265,12 +262,12 @@ for index, row in data1.iterrows():
 
     # 检查卖出信号
 
-    # elif row['mas'] < row['mal'] and position > 0:
-    # elif row['emas'] < row['emal'] and row['close'] > row['bu'] and position > 0:
+    elif row['mas'] < row['mal'] and position > 0:
+    # elif row['emas'] < row['emal'] and position > 0:
     # elif row['close'] > row['bu'] and position > 0:
     # elif row['close'] < row['ma'] and position > 0:
     # elif row['high'] > row['bu'] and position > 0:
-    elif row['ic'] > row['bu'] and position > 0:
+    # elif  row['high'] > row['bu'] and balance > 0:
         fee = position * hprice * commission_rate
         # fee = position * price * commission_rate
         trade_amount = position  # 保存当前持仓量用于交易记录

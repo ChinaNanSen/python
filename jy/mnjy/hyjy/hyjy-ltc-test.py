@@ -30,7 +30,6 @@ marketDataAPI = MarketData.MarketAPI(flag=flag)
 bz = "BTC-USDT-SWAP"
 dbz = "BTC"
 
-
 def getOrder(oid):
     result = tradeAPI.get_order(
         instId=bz,
@@ -164,43 +163,27 @@ def jy():
 
     data1['ts'] = data1['ts'].apply(
         lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
-    data1['ts'] = data1['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    data1.set_index('ts', inplace=True)
+    data_frame['ts'] = data_frame['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    data_frame.set_index('ts', inplace=True)
+    return data_frame
 
-    ma15 = finta.TA.SMA(data1, 15)
-    ma150 = finta.TA.SMA(data1, 150)
-    bmacd = finta.TA.MACD(data1)
-    bbands = finta.TA.BBANDS(data1)
-    bu = bbands.iloc[19]['BB_UPPER']
-    bm = bbands.iloc[19]['BB_MIDDLE']
-    bl = bbands.iloc[19]['BB_LOWER']
-    cn = data1['close'].iloc[0]
-    hn = data1['high'].iloc[0]
-    ln = data1['low'].iloc[0]
-    ich = finta.TA.ICHIMOKU(data1)
-    print(ich)
-    ic = ich.iloc[0]['CHIKOU']
-
-    # print("%s\n%s\n" %
-    #       (ma15.iloc[15], ma150.iloc[150]))
-    print("ln:%s\nbl:%s\n" %(ln, bl))
-    print("-------------")
-    print("hn:%s\nbu:%s\n" %(hn, bu))
-    print(ic)
-
-    exit(112)
-
-    # 检查交叉点并执行交易逻辑
-    buy_signals = {}
-    sell_signals = {}
+def trading_logic(data_frame, position_opened):
     
+    # 交易逻辑
+    ma15 = finta.TA.SMA(data_frame, 15)
+    ma150 = finta.TA.SMA(data_frame, 150)
+    bbands = finta.TA.BBANDS(data_frame)
+    bu = bbands.iloc[-1]['BB_UPPER']
+    bl = bbands.iloc[-1]['BB_LOWER']
+    cn = data_frame['close'].iloc[0]
+    hn = data_frame['high'].iloc[0]
+    ln = data_frame['low'].iloc[0]
+    print("\033[32mcn:%s\nbl:%s\n\033[0m" %(ln, bl))
+    print("-------------")
+    print("\033[31mcn:%s\nbu:%s\n\033[0m" %(hn, bu))
 
-
-    # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    if float(ln) < bl and position_opened == False:
-    # if float(ln) < bl and position_opened:
-
-        order_id = generate_order_id()
+    if float(ln) < bl and  position_opened == False:
+        print(position_opened)
         print("\033[32m开始买入\033[0m")
         print("-----")
         
