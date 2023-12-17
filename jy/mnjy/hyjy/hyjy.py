@@ -393,7 +393,15 @@ if __name__ == "__main__":
         log_dictionary(dd)
         dd.clear()
         time.sleep(2)
-        jy()
+        for attempt in range(3):  # 尝试次数
+            try:
+                jy()
+            except Exception as e:
+                print(f"Error: {e}")
+            if attempt < 2:  # 如果这不是最后一次尝试，等待2秒然后再次尝试
+                time.sleep(2)
+            else:
+                print("Failed to execute trading logic after 3 attempts.")
         print(position_opened)
         
         

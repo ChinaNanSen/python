@@ -51,7 +51,7 @@ def get_monthly_historical_data():
     timeframe = '30m'  # 时间框架为1小时
 
     # 设定开始和结束时间（示例）
-    start_str = '2023-12-01 00:00:00'
+    start_str = '2023-11-01 00:00:00'
     end_str = '2023-12-08 00:00:00'
 
     # 将字符串日期转换为毫秒时间戳
@@ -173,15 +173,19 @@ macd = finta.TA.MACD(data1)
 # data1['sig'] = macd.iloc[-1]['SIGNAL']
 # bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
+print(bbands['BB_UPPER'])
 data1['bu'] = bbands.iloc[-27]['BB_UPPER']
+# print(data1['bu'])
 data1['bm'] = bbands.iloc[-27]['BB_MIDDLE']
 data1['bl'] = bbands.iloc[-27]['BB_LOWER']
 cn = data1['close'].iloc[0]
 hn = data1['high'].iloc[0]
 ln = data1['low'].iloc[0]
-print(data1)
+# print(data1)
 ich = finta.TA.ICHIMOKU(data1)
+print(ich['CHIKOU'])
 data1['ic'] = ich.iloc[-27]['CHIKOU']
+# print(data1['ic'].iloc[-1])
 
 # # print(ich)
 # print(data1['ic'])
@@ -219,13 +223,14 @@ total_commission = 0  # 总手续费
 
 # 记录交易
 trades = []
-# print(data1)
-exit(112)
+# print(data1["bu"])
+# exit(112)
 
 # 回测逻辑
 for index, row in data1.iterrows():
-    # print(row['ts'])
-    if pd.isna(row['emas']) or pd.isna(row['emal']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
+    print(row['bu'])
+    # if pd.isna(row['emas']) or pd.isna(row['emal']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
+    if  pd.isna(row['ic']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
         continue
 
    
@@ -235,9 +240,10 @@ for index, row in data1.iterrows():
 
     # 检查买入信号
     
-    print(row)
+    # print(row['ic'])
     # exit(1)
-    
+    # print(row['ic'])
+    # print(row['bl'])
 
     # if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and row['close'] < row['bl'] and balance > 0:
