@@ -67,7 +67,7 @@ def positions():
 
 
 # 配置日志
-logging.basicConfig(filename='trading_btc.log', level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
+logging.basicConfig(filename='trading_btc.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',encoding='utf-8')
 
 def log_dictionary(dict_data):
     """
@@ -188,6 +188,7 @@ def jy():
     #       (ma15.iloc[15], ma150.iloc[150]))
     print("ma150: ",ma)
     print("cn: ",cn)
+    print("============")
     print("ln:%s\nbl:%s\n" %(ln, bl))
     print("-------------")
     print("hn:%s\nbu:%s\n" %(hn, bu))
