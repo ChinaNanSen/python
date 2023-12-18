@@ -113,19 +113,20 @@ def trading_logic(data_frame, position_opened):
     # print(data_frame)
     # print(ln)
     # print(hn)
-    # 
+    
+    print(ic)
     
     print("\033[32mln:%s\nbl:%s\n\033[0m" %(ln, bl))
     print("-------------")
     print("\033[31mhn:%s\nbu:%s\n\033[0m" %(hn, bu))
     # exit(111)
     # if float(ln) < bl and  position_opened == False:
-    if float(ic) > bu and  position_opened == False:
+    if float(ic) < bl and  position_opened == False:
         print(position_opened)
         print("\033[32m开始买入\033[0m")
         return "buy"
     # elif float(hn) > bu and position_opened:
-    elif float(ic) < bl and position_opened:
+    elif float(ic) > bu and position_opened:
         print("\033[31m开始卖出\033[0m")
         return "sell"
     elif position_opened:    

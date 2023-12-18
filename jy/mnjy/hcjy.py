@@ -173,17 +173,17 @@ macd = finta.TA.MACD(data1)
 # data1['sig'] = macd.iloc[-1]['SIGNAL']
 # bbands = finta.TA.BBANDS(data1,30,3)
 bbands = finta.TA.BBANDS(data1)
+print(bbands['BB_UPPER'])
 data1['bu'] = bbands.iloc[-27]['BB_UPPER']
+# print(data1['bu'])
 data1['bm'] = bbands.iloc[-27]['BB_MIDDLE']
 data1['bl'] = bbands.iloc[-27]['BB_LOWER']
 cn = data1['close'].iloc[0]
 hn = data1['high'].iloc[0]
 ln = data1['low'].iloc[0]
-# print(data1)
-# print(mal)
-# exit(11)
-# ich = finta.TA.ICHIMOKU(data1)
-# data1['ic'] = ich.iloc[-27]['CHIKOU']
+print(data1)
+ich = finta.TA.ICHIMOKU(data1)
+data1['ic'] = ich.iloc[-27]['CHIKOU']
 
 # # print(ich)
 # print(data1['ic'])
@@ -222,12 +222,12 @@ total_commission = 0  # 总手续费
 # 记录交易
 trades = []
 # print(data1)
-# exit(112)
+exit(112)
 
 # 回测逻辑
 for index, row in data1.iterrows():
     # print(row['ts'])
-    if  pd.isna(row['emal']) or pd.isna(row['emas'])  or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
+    if pd.isna(row['emas']) or pd.isna(row['emal']) or pd.isna(row['bu']) or pd.isna(row['bl'] ):  # 跳过还未生成MA的行
         continue
 
    
@@ -237,9 +237,10 @@ for index, row in data1.iterrows():
 
     # 检查买入信号
     
-    # print(row)
+    print(row)
     # exit(1)
-    
+    # print(row['ic'])
+    # print(row['bl'])
 
     if row['mas'] > row['mal'] and balance > 0:
     # if row['emas'] > row['emal'] and balance > 0:
