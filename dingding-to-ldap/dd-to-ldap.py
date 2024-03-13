@@ -389,9 +389,9 @@ if __name__ == '__main__':
 
     # 删除 离职员工
     # ldap_client.delete_staff(['202719250920330978'])
-    ldap_client.delete_staff(ss_dismission_staff, '上海司顺电子商务有限公司')
-    ldap_client.delete_staff(gm_dismission_staff, '观妙科技（杭州）有限公司')
-    ldap_client.delete_staff(qtl_dismission_staff, '趣探路网络技术公司')
+    ldap_client.delete_staff(ss_dismission_staff, 'xxxxxxxxxx')
+    ldap_client.delete_staff(gm_dismission_staff, 'xxxxxxxxxx')
+    ldap_client.delete_staff(qtl_dismission_staff, 'xxxxxxxx')
 
     # 断开连接
     ldap_client.unbind()
