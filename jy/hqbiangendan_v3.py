@@ -9,7 +9,7 @@ url = "https://www.binance.com/bapi/futures/v1/friendly/future/copy-trade/home-p
 payload = {
     "pageNumber": 1,
     "pageSize": 20,
-    "timeRange": "30D",
+    "timeRange": "90D",
     "dataType": "ROI",
     "favoriteOnly": False,
     "hideFull": False,
@@ -65,7 +65,7 @@ for trader in all_data:
         trader["tradingDays"] = 0
 
 # 打开CSV文件并写入标题行
-with open("zz_data.csv", "w", newline="", encoding="utf-8") as csvfile:
+with open("j90_data.csv", "w", newline="", encoding="utf-8") as csvfile:
     fieldnames = ["nickname", "roi", "mdd", "sharpRatio", "winRate", "tradingDays"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
@@ -78,4 +78,4 @@ with open("zz_data.csv", "w", newline="", encoding="utf-8") as csvfile:
         winRate = trader["winRate"]
         sharpRatio = trader["sharpRatio"]
         tradingDays = trader["tradingDays"]
-        writer.writerow({"nickname": nickname, "roi": roi, "mdd": mdd, "sharpRatio": sharpRatio, "winRate": winRate, "tradingDays": tradingDays})
+        writer.writerow({"nickname": nickname, "roi": roi, "mdd": mdd,  "winRate": winRate, "tradingDays": tradingDays})

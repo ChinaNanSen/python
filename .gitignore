@@ -2,3 +2,4 @@ combinations.txt
 jy/config.py
 jy/mnjy/config.ini
 jy/mnjy/hyjy/trading_btc.log
+*.csv
