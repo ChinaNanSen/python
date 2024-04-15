@@ -56,28 +56,44 @@ with ThreadPoolExecutor(max_workers=10) as executor:
     for future in as_completed(futures):
         future.result()
 
-# 计算每个交易员的交易天数
-now = datetime.now().timestamp() * 1000  # 获取当前时间戳,并转换为毫秒
-for trader in all_data:
-    start_time = trader["startTime"]
-    if start_time != 0:
+# 定义计算交易天数的函数
+def calculate_trading_days(trader):
+    now = datetime.now().timestamp() * 1000  # 获取当前时间戳，并转换为毫秒
+    start_time = trader.get("startTime", 0)
+    if start_time:
         trading_days = (now - start_time) // (1000 * 60 * 60 * 24)
         trader["tradingDays"] = int(trading_days)
     else:
         trader["tradingDays"] = 0
 
-# 打开CSV文件并写入标题行
-with open("j30_data.csv", "w", newline="", encoding="utf-8") as csvfile:
-    fieldnames = ["nickname", "roi", "mdd", "sharpRatio", "winRate", "tradingDays"]
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-    writer.writeheader()
+# 定义写入CSV文件的函数
+def write_to_csv(trader, csvfile, writer):
+    trader_data = {
+        "nickname": trader["nickname"],
+        "roi": trader["roi"],
+        "mdd": trader["mdd"],
+        "winRate": trader["winRate"],
+        "tradingDays": trader["tradingDays"]
+    }
+    writer.writerow(trader_data)
 
-    # 遍历每个交易员的数据并写入CSV文件
-    for trader in all_data:
-        nickname = trader["nickname"]
-        roi = trader["roi"]
-        mdd = trader["mdd"]
-        winRate = trader["winRate"]
-        sharpRatio = trader["sharpRatio"]
-        tradingDays = trader["tradingDays"]
-        writer.writerow({"nickname": nickname, "roi": roi, "mdd": mdd,  "winRate": winRate, "tradingDays": tradingDays})
+# 使用多线程计算交易天数和写入CSV文件
+with ThreadPoolExecutor(max_workers=10) as executor:
+    # 计算交易天数
+    trading_days_futures = [executor.submit(calculate_trading_days, trader) for trader in all_data]
+    
+    # 等待计算交易天数的任务完成
+    for future in as_completed(trading_days_futures):
+        future.result()  # 获取结果，确保每个交易员的交易天数都已计算
+
+    # 打开CSV文件准备写入
+    with open("newj30_data.csv", "w", newline="", encoding="utf-8") as csvfile:
+        fieldnames = ["nickname", "roi", "mdd", "winRate", "tradingDays"]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        # 写入CSV文件
+        write_futures = [executor.submit(write_to_csv, trader, csvfile, writer) for trader in all_data]
+        
+        # 等待写入CSV文件的任务完成
+        for future in as_completed(write_futures):
+            future.result()  # 确保所有数据都已写入文件
