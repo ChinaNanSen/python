@@ -25,14 +25,16 @@ all_data = []
 
 while True:
     response = requests.request("POST", url, headers=headers, json=payload)
-    #print(response.json())
+    # print(response.json())
     data = response.json()["data"]["list"]
     all_data.extend(data)
 
     total = response.json()["data"]["total"]
     current_len = len(all_data)
+    
 
     if payload["pageNumber"] >= math.ceil(total/payload["pageSize"]):
+    # if payload["pageNumber"] >= 1:
         break
 
     payload["pageNumber"] += 1
@@ -44,12 +46,29 @@ def get_start_time(trader):
     detail_url = f"https://www.binance.com/bapi/futures/v1/friendly/future/copy-trade/lead-portfolio/detail?portfolioId={portfolio_id}"
     detail_response = requests.get(detail_url)
     detail_data = detail_response.json().get("data")
+    # print(detail_data)
 
     if detail_data and "startTime" in detail_data:
         start_time = detail_data["startTime"]
         trader["startTime"] = start_time
+        
     else:
         trader["startTime"] = 0  # 设置默认值为 0
+
+    if detail_data and "marginBalance" in detail_data:
+        marginBalance = detail_data["marginBalance"]
+        trader["marginBalance"] = marginBalance
+        
+    else:
+        trader["marginBalance"] = 0  # 设置默认值为 0
+
+    
+    if detail_data and "copierPnl" in detail_data:
+        marginBalance = detail_data["copierPnl"]
+        trader["copierPnl"] = marginBalance
+        
+    else:
+        trader["copierPnl"] = 0  # 设置默认值为 0
 
 with ThreadPoolExecutor(max_workers=10) as executor:
     futures = [executor.submit(get_start_time, trader) for trader in all_data]
@@ -72,7 +91,13 @@ def write_to_csv(trader, csvfile, writer):
         "nickname": trader["nickname"],
         "roi": trader["roi"],
         "mdd": trader["mdd"],
+        "apiKeyTag": trader["apiKeyTag"],#api标签
         "winRate": trader["winRate"],
+        "pnl": trader["pnl"],#盈亏
+        "aum": trader["aum"],#资产规模
+        "marginBalance": trader["marginBalance"],#保证金余额
+        "sharpRatio": trader["sharpRatio"],
+        "copierPnl": trader["copierPnl"], #跟单者盈亏
         "tradingDays": trader["tradingDays"]
     }
     writer.writerow(trader_data)
@@ -88,7 +113,7 @@ with ThreadPoolExecutor(max_workers=10) as executor:
 
     # 打开CSV文件准备写入
     with open("newj30_data.csv", "w", newline="", encoding="utf-8") as csvfile:
-        fieldnames = ["nickname", "roi", "mdd", "winRate", "tradingDays"]
+        fieldnames = ["nickname", "roi", "mdd", "winRate", "tradingDays", "sharpRatio", "pnl", "copierPnl", "aum", "marginBalance", "apiKeyTag"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         # 写入CSV文件
