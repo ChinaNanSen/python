@@ -160,7 +160,7 @@ def jy():
     historical_data = marketDataAPI.get_candlesticks(
         instId=bz,
         # before="",
-        bar="30m",
+        bar="5m",
         limit="160"
     )
     time.sleep(0.1)
@@ -281,7 +281,7 @@ def jy():
     zc = float(hn) - float(bu)
     print("zc: ",zc)
     if float(hn) > bu and zc > 5 and position_opened:
-        print("\033[31m开始卖出\033[0m")
+        print("\033[31m开始平仓\033[0m")
         print("++++++++++")
         print(order_id)
         info = {}
@@ -331,7 +331,7 @@ def jy():
             dd.append(info)
 
             sell_signals[data1.index[15]] = data1['close'].iloc[15]
-            print("\033[32m---hit-----sell\033[0m")
+            print("\033[32m---hit-----sell--已平仓\033[0m")
 
         else:
             print("\033[31msell操作忽略,BTC余额不足\033[0m")
@@ -394,7 +394,7 @@ def jy():
                
 
                 sell_signals[data1.index[15]] = data1['close'].iloc[15]
-                print("\033[32m---hit-----sell\033[0m")
+                print("\033[32m---hit-----sell--止损平仓\033[0m")
                 time.sleep(240)
 
             else:
