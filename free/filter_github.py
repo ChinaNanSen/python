@@ -29,7 +29,7 @@ def get_proxy_ip():
 
 def downloader_use_proxy(url):
     #github 个人token，谨慎不要泄露
-    access_token = "ghp_rcxxxxxxxxxxxx"
+    access_token = ""
     while True:
         proxies = get_proxy_ip()
         try:
