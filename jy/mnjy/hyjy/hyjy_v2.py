@@ -43,7 +43,7 @@ def getOrder(oid):
         clOrdId=oid
     )
     print(result)
-    time.sleep(0.1)
+ 
     return result
 
 
@@ -57,7 +57,7 @@ def tradedata():
         instType="SPOT",
         ordType="market,post_only,fok,ioc"
     )
-    time.sleep(0.1)
+  
     return result
 
 def positions():
@@ -65,7 +65,7 @@ def positions():
         instType="SWAP",
         instId=bz
     )
-    time.sleep(0.1)
+   
     return result
 
 
@@ -91,7 +91,7 @@ def account(cb):
             result = accountAPI.get_account_balance(
                 ccy=cb
             )
-            time.sleep(0.1)
+            
             return result["data"][0]
         except Exception as e:
             print(f"Error: {e}")
@@ -107,16 +107,16 @@ def jy():
 
     # 获取历史数据
     # small_period = "5m"  # 可以根据需要修改,如 "5m"、"15m"、"1h" 等
-    historical_data = marketDataAPI.get_candlesticks(instId=bz, bar="5m", limit="10")
-    time.sleep(0.1)
+    historical_data = marketDataAPI.get_candlesticks(instId=bz, bar="15m", limit="10")
+  
     data1 = pd.DataFrame(historical_data["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     # data1['ts'] = data1['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
     # data1['ts'] = data1['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # data1.set_index('ts', inplace=True)
 
     # large_period = "30m"  # 可以根据需要修改,如 "30m"、"1h"、"2h" "4h"等
-    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="30m", limit="60")
-    time.sleep(0.1)
+    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="1h", limit="250")
+ 
     data2 = pd.DataFrame(historical_data1["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     # data2['ts'] = data2['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
     # data2['ts'] = data2['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
@@ -125,7 +125,7 @@ def jy():
     
     # 计算EMA值
     ma_small = finta.TA.EMA(data1, 10)
-    ma_large = finta.TA.EMA(data2, 60)
+    ma_large = finta.TA.EMA(data1, 240)
 
     # # 添加止盈止损
     # take_profit = 0.025  # 止盈比例,可调整
@@ -134,16 +134,14 @@ def jy():
     # EMA顺势指标开仓条件
     if position_opened == False:
         print('start diff')
-        print(float(data1['close'].iloc[1]) , float(ma_large.iloc[58]) , float(data1['close'].iloc[0]) , float(ma_small.iloc[9]))
-        # print(data2['close'].iloc[0])
-        # print(ma_large.iloc[59])
-        # print(ma_small.iloc[9])
         # exit(110)
-        if float(data1['close'].iloc[1]) > float(ma_large.iloc[58]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):  # 下穿MA10开空
+        # if float(data1['close'].iloc[1]) > float(ma_large.iloc[238]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):  # 下穿MA10开空
+        if float(ma_small.iloc[8]) < float(ma_large.iloc[238]) and float(ma_small.iloc[9]) < float(ma_large.iloc[239]) and float(data1['close'].iloc[1]) > float(ma_small.iloc[8]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):  # 下穿MA10开空
             order_id = generate_order_id()
             print('echo 1111')
             open_position("sell")
-        elif float(data1['close'].iloc[1]) < float(ma_large.iloc[58]) and float(data1['close'].iloc[0]) > float(ma_small.iloc[9]):  # 上穿MA10开多
+        # if float(data1['close'].iloc[1]) > float(ma_large.iloc[238]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):  # 下穿MA10开空
+        elif float(ma_small.iloc[8]) > float(ma_large.iloc[238]) and float(ma_small.iloc[9]) > float(ma_large.iloc[239]) and float(data1['close'].iloc[1]) < float(ma_small.iloc[8]) and float(data1['close'].iloc[0]) > float(ma_small.iloc[9]):  # 上穿MA10开多
             order_id = generate_order_id()     
             open_position("buy")
 
@@ -151,7 +149,7 @@ def jy():
     elif position_opened:
         print("zhi y zhi s")
         pos_data = positions()['data'][0]
-        # print(pos_data)
+        print(pos_data)
         # cur_price = float(data1['close'].iloc[-1])
         # entry_price = float(pos_data['avgPx'])  # 持仓均价
         pnl = float(pos_data['upl'])  # 浮动盈亏
@@ -165,13 +163,13 @@ def jy():
         #     close_position(pos_data['posSide'])
         # if abs(pnl) >= 50 or abs(pnlrao) >= 0.025:  # 平仓 ,亏损或盈利达预期则平仓
         # if abs(pnl) >= 1:  # 平仓 ,亏损或盈利达预期则平仓
-        if  abs(pnlrao) >= 0.03:  # 平仓 ,亏损或盈利达预期则平仓
+        if  pnlrao < -0.03:  # 平仓 ,亏损或盈利达预期则平仓
             close_position(pos_data['posSide'])
-        elif pos_data['posSide'] == 'long' and float(data1['close'].iloc[1]) > float(ma_large.iloc[58]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):
+        elif pos_data['posSide'] == 'long' and float(ma_small.iloc[8]) < float(ma_large.iloc[238]) and float(ma_small.iloc[9]) < float(ma_large.iloc[239]) and float(data1['close'].iloc[1]) > float(ma_small.iloc[8]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):
             close_position(pos_data['posSide'])
             # order_id = generate_order_id()
             # open_position('sell')
-        elif pos_data['posSide'] == 'short' and float(data1['close'].iloc[1]) < float(ma_large.iloc[58]) and float(data1['close'].iloc[0]) > float(ma_small.iloc[9]):
+        elif pos_data['posSide'] == 'short' and float(ma_small.iloc[8]) > float(ma_large.iloc[238]) and float(ma_small.iloc[9]) > float(ma_large.iloc[239]) and float(data1['close'].iloc[1]) < float(ma_small.iloc[8]) and float(data1['close'].iloc[0]) > float(ma_small.iloc[9]):
             close_position(pos_data['posSide'])
             # order_id = generate_order_id()
             # open_position('buy')
@@ -192,7 +190,7 @@ def open_position(direction):
         side = "buy" if direction == "buy" else "sell"
         posSide = "long" if direction == "buy" else "short"
         result = tradeAPI.place_order(instId=bz, tdMode="cross", posSide=posSide, side=side, clOrdId=direction+str(order_id), ordType="market", sz="300")
-        time.sleep(0.1)
+     
         print('--------------',result)
         position_opened = True
         oid = result['data'][0]['clOrdId']
@@ -237,7 +235,7 @@ def close_position(posSide):
 
     if float(byex) != 0:
         uresult = tradeAPI.close_positions(instId=bz, clOrdId=direction+str(order_id), posSide=posSide, mgnMode="cross")
-        time.sleep(0.1)
+     
         print('++++++++++',uresult)
         position_opened = False
         uoid = uresult['data'][0]['clOrdId']
@@ -276,5 +274,5 @@ if __name__ == "__main__":
                 else:
                     print("Failed to execute trading logic after 3 attempts.")
                     exit(113)
-        time.sleep(0.1)
+      
         print("aaaaaaaaaaaaaa",position_opened)
