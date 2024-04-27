@@ -115,7 +115,7 @@ def jy():
     # data1.set_index('ts', inplace=True)
 
     # large_period = "30m"  # 可以根据需要修改,如 "30m"、"1h"、"2h" "4h"等
-    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="1h", limit="250")
+    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="15m", limit="250")
  
     data2 = pd.DataFrame(historical_data1["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     # data2['ts'] = data2['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
@@ -125,7 +125,7 @@ def jy():
     
     # 计算EMA值
     ma_small = finta.TA.EMA(data1, 10)
-    ma_large = finta.TA.EMA(data1, 240)
+    ma_large = finta.TA.EMA(data2, 240)
 
     # # 添加止盈止损
     # take_profit = 0.025  # 止盈比例,可调整
@@ -134,6 +134,8 @@ def jy():
     # EMA顺势指标开仓条件
     if position_opened == False:
         print('start diff')
+        # print(ma_large)
+        # print(ma_small)
         # exit(110)
         # if float(data1['close'].iloc[1]) > float(ma_large.iloc[238]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):  # 下穿MA10开空
         if float(ma_small.iloc[8]) < float(ma_large.iloc[238]) and float(ma_small.iloc[9]) < float(ma_large.iloc[239]) and float(data1['close'].iloc[1]) > float(ma_small.iloc[8]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):  # 下穿MA10开空
@@ -161,9 +163,9 @@ def jy():
         #     close_position(pos_data['posSide'])
         # elif pnl < 0 and (entry_price - cur_price) / entry_price >= stop_loss:  # 止损  
         #     close_position(pos_data['posSide'])
-        # if abs(pnl) >= 50 or abs(pnlrao) >= 0.025:  # 平仓 ,亏损或盈利达预期则平仓
+        if pnl > 50 or pnlrao < -0.03:  # 平仓 ,亏损或盈利达预期则平仓
         # if abs(pnl) >= 1:  # 平仓 ,亏损或盈利达预期则平仓
-        if  pnlrao < -0.03:  # 平仓 ,亏损或盈利达预期则平仓
+        # if  pnlrao < -0.03:  # 平仓 ,亏损或盈利达预期则平仓
             close_position(pos_data['posSide'])
         elif pos_data['posSide'] == 'long' and float(ma_small.iloc[8]) < float(ma_large.iloc[238]) and float(ma_small.iloc[9]) < float(ma_large.iloc[239]) and float(data1['close'].iloc[1]) > float(ma_small.iloc[8]) and float(data1['close'].iloc[0]) < float(ma_small.iloc[9]):
             close_position(pos_data['posSide'])
