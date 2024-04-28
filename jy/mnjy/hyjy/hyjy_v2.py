@@ -107,7 +107,7 @@ def jy():
 
     # 获取历史数据
     # small_period = "5m"  # 可以根据需要修改,如 "5m"、"15m"、"1h" 等
-    historical_data = marketDataAPI.get_candlesticks(instId=bz, bar="15m", limit="10")
+    historical_data = marketDataAPI.get_candlesticks(instId=bz, bar="5m", limit="10")
   
     data1 = pd.DataFrame(historical_data["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     # data1['ts'] = data1['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
@@ -115,7 +115,7 @@ def jy():
     # data1.set_index('ts', inplace=True)
 
     # large_period = "30m"  # 可以根据需要修改,如 "30m"、"1h"、"2h" "4h"等
-    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="15m", limit="250")
+    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="5m", limit="250")
  
     data2 = pd.DataFrame(historical_data1["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     # data2['ts'] = data2['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
@@ -163,7 +163,7 @@ def jy():
         #     close_position(pos_data['posSide'])
         # elif pnl < 0 and (entry_price - cur_price) / entry_price >= stop_loss:  # 止损  
         #     close_position(pos_data['posSide'])
-        if pnl > 50 or pnlrao < -0.03:  # 平仓 ,亏损或盈利达预期则平仓
+        if pnl > 50 or pnlrao < -0.1:  # 平仓 ,亏损或盈利达预期则平仓
         # if abs(pnl) >= 1:  # 平仓 ,亏损或盈利达预期则平仓
         # if  pnlrao < -0.03:  # 平仓 ,亏损或盈利达预期则平仓
             close_position(pos_data['posSide'])
