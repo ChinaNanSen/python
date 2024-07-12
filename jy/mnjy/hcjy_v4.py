@@ -7,6 +7,7 @@ import okx.Trade as Trade
 import okx.MarketData as MarketData
 import time
 import finta
+import sys
 
 
 
@@ -69,6 +70,14 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
     """
     执行回测，使用双均线策略（EMA5和EMA20）
     """
+
+    # 创建或打开输出文件
+    output_file = open('backtest_results.txt', 'w', encoding='utf-8')
+    
+    # 重定向标准输出到文件
+    original_stdout = sys.stdout
+    sys.stdout = output_file
+
     data = get_historical_data(symbol, start_date, end_date, timeframe)
     data['ts'] = pd.to_datetime(data['ts'], unit='ms')
     # 如果数据已经是UTC时间，那么首先将其本地化到UTC
@@ -81,7 +90,10 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
     # print(data)
     data['ema10'] = finta.TA.EMA(data,10)
     data['ema20'] = finta.TA.EMA(data,20)
+    # data['ema10'] = finta.TA.EMA(data,15)
+    # data['ema20'] = finta.TA.EMA(data,150)
     mac = finta.TA.MACD(data,13,34)
+    # mac = finta.TA.MACD(data,12,26)
     data = data.join(mac)
     # data = data.join(data['ema10'])
     # data = data.join(data['ema20'])
@@ -127,19 +139,25 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
             print(f"Date: {row['ts']}, Position Closed: {position}, Balance: {balance}, PnL: {position_pnl}, Price: {row['close']}")
 
         # 打印当前持仓和余额
-        print(f"Date: {row['ts']}, Position: {position}, Balance: {balance}")
+        print(f"Date: {row['ts']}, Position: {position}, Balance: {balance}, Price: {row['close']}")
 
     # 回测结束
     final_balance = balance
     print(f"Initial Balance: {initial_balance}, Final Balance: {final_balance}")
 
+    # 恢复标准输出并关闭文件
+    sys.stdout = original_stdout
+    output_file.close()
+
+    print(f"Backtest results have been saved to 'backtest_results.txt'")
+
 
 # 运行回测
 if __name__ == "__main__":
-    symbol = "BTC-USDT-SWAP"  # 交易对
-    start_date = "2024-02-29 00:00:00"
+    symbol = "ETH-USDT-SWAP"  # 交易对
+    start_date = "2022-12-05 00:00:00"
     end_date = "2024-07-11 23:59:59"
-    timeframe = "30m"  # 时间框架，这里使用1天
+    timeframe = "6h"  # 时间框架，这里使用1天
     initial_balance = 5000  # 初始资金
 
     backtest(symbol, start_date, end_date, timeframe, initial_balance)
