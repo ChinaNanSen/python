@@ -1,0 +1,7 @@
+2024-05-11 23:11:39,551 - INFO - HTTP Request: POST https://www.okx.com/api/v5/account/set-leverage "HTTP/2 200 OK"
+2024-05-11 23:11:39,552 - INFO - []
+2024-05-11 23:12:02,941 - INFO - HTTP Request: POST https://www.okx.com/api/v5/account/set-leverage "HTTP/2 200 OK"
+2024-05-11 23:12:02,942 - INFO - []
+2024-05-11 23:12:08,290 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=5m&limit=155 "HTTP/2 200 OK"
+2024-05-11 23:12:08,833 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=30m&limit=70 "HTTP/2 200 OK"
+2024-05-11 23:12:09,412 - INFO - HTTP Request: GET https://www.okx.com/api/v5/market/tickers?instType=SWAP "HTTP/2 200 OK"

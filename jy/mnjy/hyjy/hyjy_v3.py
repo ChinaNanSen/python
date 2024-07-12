@@ -9,6 +9,15 @@ import time
 import finta
 import configparser
 import random
+import pandas as pd
+import ccxt
+from datetime import datetime
+import numpy as np
+import okx.Account as Account
+import okx.Trade as Trade
+import okx.MarketData as MarketData
+import time
+import finta
 
 # 配置文件读取API初始化信息
 config = configparser.ConfigParser()
@@ -22,13 +31,33 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "BTC-USDT-SWAP"
+symbol = "BTC-USDT-SWAP"
 dbz = "BTC"
+
+
+# 初始化交易所
+exchange = ccxt.okx()
+
+def get_historical_data(symbol, timeframe):
+    """
+    从交易所获取指定时间段的历史 K 线数据
+    """
+    
+    ohlcv = exchange.fetch_ohlcv(symbol, timeframe)
+ 
+        
+    # 更新开始时间戳为最后一条数据的时间加上时间框架
+       
+    time.sleep(exchange.rateLimit / 1000)
+
+    return pd.DataFrame(ohlcv, columns=["ts", "open", "high", "low", "close", "volume"])
+
+
 
 def setGgbnum():
     # 在逐仓交易模式下，设置币币杠杆的杠杆倍数（币对层面）
     result = accountAPI.set_leverage(
-        instId=bz,
+        instId=symbol,
         lever="20",
         mgnMode="cross"
     )
@@ -38,7 +67,7 @@ def setGgbnum():
 # 其他辅助函数...
 def getOrder(oid):
     result = tradeAPI.get_order(
-        instId=bz,
+        instId=symbol,
         # ordId=oid,
         clOrdId=oid
     )
@@ -63,7 +92,7 @@ def tradedata():
 def positions():
     result = accountAPI.get_positions(
         instType="SWAP",
-        instId=bz
+        instId=symbol
     )
    
     return result
@@ -107,42 +136,58 @@ def jy():
 
     # 获取历史数据
     # small_period = "5m"  # 可以根据需要修改,如 "5m"、"15m"、"1h" 等
-    historical_data = marketDataAPI.get_candlesticks(instId=bz, bar="5m", limit="155")
+    # historical_data = marketDataAPI.get_candlesticks(instId=bz, bar="5m", limit="155")
+    data = get_historical_data(symbol=symbol, timeframe="5m")
+    # print(historical_data)
   
-    data1 = pd.DataFrame(historical_data["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    # data1 = pd.DataFrame(historical_data["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
     # data1['ts'] = data1['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
     # data1['ts'] = data1['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
     # data1.set_index('ts', inplace=True)
 
     # large_period = "30m"  # 可以根据需要修改,如 "30m"、"1h"、"2h" "4h"等
-    historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="30m", limit="70")
+    # historical_data1 = marketDataAPI.get_candlesticks(instId=bz, bar="30m", limit="70")
  
-    data2 = pd.DataFrame(historical_data1["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
-    data2['ts'] = data2['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
-    data2['ts'] = data2['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    data2.set_index('ts', inplace=True)
+    # data2 = pd.DataFrame(historical_data1["data"], columns=["ts", "open", "high", "low", "close", "vol", "volCcy", "volCcyQuote", "confirm"])
+    # data2['ts'] = data2['ts'].apply(lambda x: datetime.datetime.fromtimestamp(int(x) / 1000))
+    # data2['ts'] = data2['ts'].dt.strftime('%Y-%m-%d %H:%M:%S')
+    # data2.set_index('ts', inplace=True)
     # print(data1['close'])
     # print(data1)
     # print(data2['close'])
-    # exit(1)
+    data['ts'] = pd.to_datetime(data['ts'], unit='ms')
+    # 如果数据已经是UTC时间，那么首先将其本地化到UTC
+    data['ts'] = data['ts'].dt.tz_localize('UTC')
+
+    # 然后将其转换到您的本地时区，例如'Asia/Shanghai'（东八区）
+    data['ts'] = data['ts'].dt.tz_convert('Asia/Shanghai')
+
+    #计算 MACD
+    # print(data)
+    mac = finta.TA.MACD(data,13,34)
+    data = data.join(mac)
+    # print(data)
+    print(data.iloc[-1])
+    print(data['macd'].iloc[-1])
+    exit(1)
 
     
-    # 计算EMA值
-    ma_small = finta.TA.EMA(data1, 10)
-    ma1_small = finta.TA.EMA(data1, 150)
-    print(ma_small)
-    # print(ma1_small.iloc[148])
-    # ma_large = finta.TA.SMA(data2, 60)
+    # # 计算EMA值
+    # ma_small = finta.TA.EMA(data1, 10)
+    # ma1_small = finta.TA.EMA(data1, 150)
+    # print(ma_small)
+    # # print(ma1_small.iloc[148])
+    # # ma_large = finta.TA.SMA(data2, 60)
 
-    macd1 = finta.TA.MACD(data1,15,34)
-    macd2 = finta.TA.MACD(data2,15,34)
+    # macd1 = finta.TA.MACD(data1,15,34)
+    # macd2 = finta.TA.MACD(data2,15,34)
 
-    print(macd1)
-    exit(1)
-    ma150_small = finta.TA.SMA(data1, 150)
-    ma120_small = finta.TA.SMA(data1, 120)
-    ma120_large = finta.TA.SMA(data2, 120)
-    ma150_large = finta.TA.SMA(data2, 150)
+    # print(macd1)
+    # exit(1)
+    # ma150_small = finta.TA.SMA(data1, 150)
+    # ma120_small = finta.TA.SMA(data1, 120)
+    # ma120_large = finta.TA.SMA(data2, 120)
+    # ma150_large = finta.TA.SMA(data2, 150)
 
     # # 添加止盈止损
     # take_profit = 0.025  # 止盈比例,可调整

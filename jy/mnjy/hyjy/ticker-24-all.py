@@ -60,6 +60,20 @@ def tradedata():
   
     return result
 
+'''
+产品类型
+SPOT：币币
+SWAP：永续合约
+'''
+def  getTicker():
+# 获取所有产品行情信息
+
+    result = marketDataAPI.get_tickers(
+    instType="SWAP"
+    )
+    return result 
+
+
 def positions():
     result = accountAPI.get_positions(
         instType="SWAP",
@@ -130,14 +144,30 @@ def jy():
     # 计算EMA值
     ma_small = finta.TA.EMA(data1, 10)
     ma1_small = finta.TA.EMA(data1, 150)
-    print(ma_small)
+    # print(ma_small)
     # print(ma1_small.iloc[148])
     # ma_large = finta.TA.SMA(data2, 60)
 
     macd1 = finta.TA.MACD(data1,15,34)
     macd2 = finta.TA.MACD(data2,15,34)
+    
+    # print(macd1)
+    # a = getTicker()['data']
+    # for n in a:
+    #     num = float(n['volCcy24h']) * float(n['last']) / 100000000
+    #     if num > 2 and "USDT" in n['instId']:
+    #         print(n['instId'],"---",round(num,2),"亿")
+    a = getTicker()['data']
+# 创建一个列表，存储交易对的ID和计算出的交易量
+    trades = [(n['instId'], float(n['volCcy24h']) * float(n['last']) / 100000000) for n in a if "USDT" in n['instId'] \
+              and float(n['volCcy24h']) * float(n['last']) / 100000000 > 5 and float(n['last']) > 0 ]
 
-    print(macd1)
+# 根据交易量对列表进行排序，降序排列
+    sorted_trades = sorted(trades, key=lambda x: x[1], reverse=True)
+
+# 打印排序后的交易对和交易量
+    for instId, num in sorted_trades:
+        print(instId, "---", round(num, 2), "亿")
     exit(1)
     ma150_small = finta.TA.SMA(data1, 150)
     ma120_small = finta.TA.SMA(data1, 120)
