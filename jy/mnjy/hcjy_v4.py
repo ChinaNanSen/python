@@ -92,6 +92,7 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
     data['ema20'] = finta.TA.EMA(data,20)
     # data['ema10'] = finta.TA.EMA(data,15)
     # data['ema20'] = finta.TA.EMA(data,150)
+    data['rsi14'] = finta.TA.RSI(data)
     mac = finta.TA.MACD(data,13,34)
     # mac = finta.TA.MACD(data,12,26)
     data = data.join(mac)
@@ -111,6 +112,7 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
     # exit(1)
     # 回测逻辑
     balance = initial_balance
+    totee = 0
     position = 0  # 持仓数量
     position_open_index = None  # 开仓时的索引
 
@@ -121,29 +123,35 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
         # print(row['macd'])
         # exit(1)
         # 检查是否需要开多头仓位
-        # if position == 0 and balance > 100 and row['EMA5'] > row['EMA20']:
-        if position == 0 and balance > 100 and data['macd'].iloc[index - 1] < 0 and  row['macd'] > 0 and row['ema20'] > row['ema10']:
+        if position == 0 and balance > 100 and data['macd'].iloc[index - 1] < 0 and  row['macd'] > 0 and row['ema20'] > row['ema10'] :
+        
             amount = balance * 0.5
             position = amount / row['close']  # 计算开多仓的数量
             position_open_index = index  # 记录开仓的索引
+            stee = row['close'] * position * 0.002
+            balance -= stee
+            totee += stee
             # print(row)
-            print(f"Date: {row['ts']}, Position start : {position}, Balance: {balance}, Price: {row['close']}")
+            print(f"Date: {row['ts']}, Position start : {position}, Balance: {balance}, Price: {row['close']}, stee: {stee}")
 
         # 检查是否需要平多头仓位
-        if position > 0 and  data['macd'].iloc[index - 1] > 0 and row['macd'] < 0 and row['ema20'] < row['ema10']:
+        if position > 0 and  data['macd'].iloc[index - 1] > 0 and row['macd'] < 0 and row['ema20'] < row['ema10'] :
+
             # 计算平仓后的收益
-            position_pnl = (row['close'] - data.iloc[position_open_index]['close']) * position * 20 - 20
+            etee = row['close'] * position * 0.002
+            position_pnl = (row['close'] - data.iloc[position_open_index]['close']) * position * 20 - etee
             balance += position_pnl  # 更新余额
+            totee += etee
             position = 0  # 重置持仓
             # print(row)
-            print(f"Date: {row['ts']}, Position Closed: {position}, Balance: {balance}, PnL: {position_pnl}, Price: {row['close']}")
+            print(f"Date: {row['ts']}, Position Closed: {position}, Balance: {balance}, PnL: {position_pnl}, Price: {row['close']}, etee: {etee}")
 
         # 打印当前持仓和余额
-        print(f"Date: {row['ts']}, Position: {position}, Balance: {balance}, Price: {row['close']}")
+        #print(f"Date: {row['ts']}, Position: {position}, Balance: {balance}, Price: {row['close']}")
 
     # 回测结束
     final_balance = balance
-    print(f"Initial Balance: {initial_balance}, Final Balance: {final_balance}")
+    print(f"Initial Balance: {initial_balance}, Final Balance: {final_balance}, Total Tee: {totee}")
 
     # 恢复标准输出并关闭文件
     sys.stdout = original_stdout
@@ -154,9 +162,9 @@ def backtest(symbol, start_date, end_date, timeframe, initial_balance):
 
 # 运行回测
 if __name__ == "__main__":
-    symbol = "ETH-USDT-SWAP"  # 交易对
-    start_date = "2022-12-05 00:00:00"
-    end_date = "2024-07-11 23:59:59"
+    symbol = "BTC-USDT-SWAP"  # 交易对
+    start_date = "2022-12-15 00:00:00"
+    end_date = "2024-12-15 23:59:59"
     timeframe = "6h"  # 时间框架，这里使用1天
     initial_balance = 5000  # 初始资金
 
