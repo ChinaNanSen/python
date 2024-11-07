@@ -26,8 +26,8 @@ flag = config['OKX']['flag']  # 实盘:0 , 模拟盘:1
 accountAPI = Account.AccountAPI(apikey, secretkey, passphrase, False, flag)
 tradeAPI = Trade.TradeAPI(apikey, secretkey, passphrase, False, flag)
 marketDataAPI = MarketData.MarketAPI(flag=flag)
-bz = "ETH-USDT-SWAP"
-dbz = "ETH"
+bz = "BTC-USDT-SWAP"
+dbz = "BTC"
 
 
 
@@ -160,7 +160,8 @@ def jy():
     historical_data = marketDataAPI.get_candlesticks(
         instId=bz,
         # before="",
-        bar="30m",
+        # bar="30m",
+        bar="6H",
         limit="160"
     )
     time.sleep(0.1)
@@ -174,7 +175,7 @@ def jy():
 
     ma15 = finta.TA.SMA(data1, 15)
     ma150 = finta.TA.SMA(data1, 150)
-    bmacd = finta.TA.MACD(data1)
+    bmacd = finta.TA.MACD(data1,13,34)
     ma = ma150.iloc[149]
     bbands = finta.TA.BBANDS(data1)
     bu = bbands.iloc[19]['BB_UPPER']
@@ -183,15 +184,20 @@ def jy():
     cn = data1['close'].iloc[0]
     hn = data1['high'].iloc[0]
     ln = data1['low'].iloc[0]
+    ema10 = finta.TA.EMA(data1,10)
+    ema30 = finta.TA.EMA(data1,30)
+    # print(bmacd)
+    # print(bmacd['macd'].iloc[0])
+    # exit(1)
 
     # print("%s\n%s\n" %
     #       (ma15.iloc[15], ma150.iloc[150]))
-    print("ma150: ",ma)
-    print("cn: ",cn)
-    print("================")
-    print("ln:%s\nbl:%s\n" %(ln, bl))
-    print("-------------")
-    print("hn:%s\nbu:%s\n" %(hn, bu))
+    # print("ma150: ",ma)
+    # print("cn: ",cn)
+    # print("================")
+    # print("ln:%s\nbl:%s\n" %(ln, bl))
+    # print("-------------")
+    # print("hn:%s\nbu:%s\n" %(hn, bu))
 
 
     # 检查交叉点并执行交易逻辑
@@ -201,9 +207,10 @@ def jy():
 
 
     # if ma15.iloc[15] > ma150.iloc[150] and position_opened:
-    cz = float(bl) - float(ln)
-    print("cz: ",cz)
-    if float(cn) > ma and float(ln) < bl and  cz > 10 and position_opened == False:
+    # cz = float(bl) - float(ln)
+    # print("cz: ",cz)
+    if  position_opened == False and bmacd['macd'].iloc[1] < 0 and  bmacd['macd'].iloc[0] > 0  and ema30.iloc[0] > ema10.iloc[0]:
+    # if float(cn) > ma and float(ln) < bl and  cz > 10 and position_opened == False:
 
     # if float(ln) < bl and position_opened:
 
@@ -278,9 +285,10 @@ def jy():
             print("\033[31mbuy操作忽略,USDT余额不足\033[0m")
 
     # elif ma15.iloc[15] < ma150.iloc[150] and position_opened == False:
-    zc = float(hn) - float(bu)
-    print("zc: ",zc)
-    if float(hn) > bu and zc > 5 and position_opened:
+    # zc = float(hn) - float(bu)
+    # print("zc: ",zc)
+    if position_opened and bmacd['macd'].iloc[1] > 0 and  bmacd['macd'].iloc[0] < 0  and ema30.iloc[0] < ema10.iloc[0]:
+    # if float(hn) > bu and zc > 5 and position_opened:
         print("\033[31m开始卖出\033[0m")
         print("++++++++++")
         print(order_id)

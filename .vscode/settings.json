@@ -2,5 +2,9 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8"
     },
-    "python.formatting.provider": "none"
+    "python.formatting.provider": "none",
+    "python.defaultInterpreterPath": "D:\\work\\Anaconda3-5.1.0\\python",
+    "python.autoComplete.extraPaths": [
+        
+    ]
 }

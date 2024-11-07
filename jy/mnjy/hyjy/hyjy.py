@@ -177,6 +177,7 @@ def jy():
     bmacd = finta.TA.MACD(data1)
     ma = ma150.iloc[149]
     bbands = finta.TA.BBANDS(data1)
+    bbands = finta.TA.KDJ(data1)
     bu = bbands.iloc[19]['BB_UPPER']
     bm = bbands.iloc[19]['BB_MIDDLE']
     bl = bbands.iloc[19]['BB_LOWER']
